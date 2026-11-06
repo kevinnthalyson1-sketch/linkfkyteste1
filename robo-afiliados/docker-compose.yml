@@ -1,0 +1,64 @@
+# Linkfly: painel + robô + Evolution API (WhatsApp) + HTTPS automático.
+# A imagem do Evolution agora é evoapicloud/evolution-api (a antiga, atendai, saiu do ar).
+services:
+  caddy:
+    image: caddy:2
+    restart: always
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMINIO: ${DOMINIO}
+    volumes: ["./Caddyfile:/etc/caddy/Caddyfile", "caddy_data:/data"]
+    depends_on: [app]
+
+  app:
+    build: .
+    restart: always
+    env_file: .env
+    environment:
+      PORT: "3000"
+      EVO_URL: http://evolution:8080
+      WEBHOOK_BASE: http://app:3000
+      DB_PATH: /app/dados/data.json
+    volumes: ["./dados:/app/dados"]
+    depends_on: [evolution]
+
+  evolution:            # sem porta aberta: só o app conversa com ele
+    image: evoapicloud/evolution-api:v2.3.7
+    restart: always
+    environment:
+      SERVER_URL: http://evolution:8080
+      AUTHENTICATION_API_KEY: ${EVO_KEY}
+      DATABASE_ENABLED: "true"
+      DATABASE_PROVIDER: postgresql
+      DATABASE_CONNECTION_URI: postgresql://evolution:${DB_SENHA}@postgres:5432/evolution?schema=public
+      DATABASE_CONNECTION_CLIENT_NAME: linkfly
+      DATABASE_SAVE_DATA_INSTANCE: "true"
+      DATABASE_SAVE_DATA_NEW_MESSAGE: "false"
+      DATABASE_SAVE_MESSAGE_UPDATE: "false"
+      DATABASE_SAVE_DATA_CONTACTS: "false"
+      DATABASE_SAVE_DATA_CHATS: "false"
+      CACHE_REDIS_ENABLED: "true"
+      CACHE_REDIS_URI: redis://redis:6379/6
+      CACHE_REDIS_PREFIX_KEY: evolution
+      CACHE_REDIS_SAVE_INSTANCES: "false"
+      CACHE_LOCAL_ENABLED: "false"
+    volumes: ["evolution_instances:/evolution/instances"]
+    depends_on: [postgres, redis]
+
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: evolution
+      POSTGRES_PASSWORD: ${DB_SENHA}
+      POSTGRES_DB: evolution
+    volumes: ["pg_data:/var/lib/postgresql/data"]
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+
+volumes:
+  caddy_data:
+  pg_data:
+  evolution_instances:

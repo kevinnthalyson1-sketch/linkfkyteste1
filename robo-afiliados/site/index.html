@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Linkfly: seu robô de ofertas para grupos de WhatsApp</title>
+<meta name="description" content="O Linkfly copia as ofertas dos grupos, troca pelos seus links de afiliado e posta nos seus grupos, sozinho. Teste grátis por 10 dias e conheça o Plano Pro por 5 dias. Planos Plus e Pro com desconto.">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f7f5;--sf:#fff;--ink:#0e2420;--mut:#566762;--ln:#dce5e1;--ac:#09755b;--ac2:#e2f4ec;--hd:rgba(243,247,245,.86);--bad:#b4442c;--badb:#fbe9e4;--wa:#25d366;--sh:0 1px 2px rgba(14,36,32,.05),0 12px 32px rgba(14,36,32,.08);--g:linear-gradient(135deg,#12b886,#0a8f9a);--chat:#e7efe9;--bub:#fff;--bubo:#d7f5e3;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1118;--sf:#121c27;--ink:#e9eef3;--mut:#9aa8b6;--ln:#1f2c3a;--ac:#2fd4a7;--ac2:#12302a;--hd:rgba(10,17,24,.86);--bad:#ff9b84;--badb:#2b1a17;--sh:0 12px 32px rgba(0,0,0,.35);--chat:#0d1a22;--bub:#17252f;--bubo:#12423a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0a1118;--sf:#121c27;--ink:#e9eef3;--mut:#9aa8b6;--ln:#1f2c3a;--ac:#2fd4a7;--ac2:#12302a;--hd:rgba(10,17,24,.86);--bad:#ff9b84;--badb:#2b1a17;--sh:0 12px 32px rgba(0,0,0,.35);--chat:#0d1a22;--bub:#17252f;--bubo:#12423a;color-scheme:dark}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--hd);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:60}
+h1,h2,h3{font-family:'Bricolage Grotesque',Inter,sans-serif;letter-spacing:-.025em;line-height:1.08;margin:0}
+h1{font-size:clamp(38px,6.4vw,68px);font-weight:800}
+h2{font-size:clamp(30px,4.4vw,46px);font-weight:700;max-width:18em}
+h3{font-size:21px;font-weight:700;line-height:1.2}
+p{margin:0}a{color:inherit}
+.w{max-width:1120px;margin:0 auto;padding:0 22px}
+section{padding:92px 0}
+.lead{color:var(--mut);font-size:19px;max-width:34em;margin-top:18px}
+:focus-visible{outline:3px solid var(--ac);outline-offset:3px;border-radius:8px}
+/* nav */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--hd);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--ln)}
+.nv{display:flex;align-items:center;gap:22px;height:64px}
+.logo{display:flex;align-items:center;gap:10px;font:800 22px 'Bricolage Grotesque',sans-serif;text-decoration:none}
+.logo svg{width:34px;height:34px}
+.nv nav{display:flex;gap:22px;margin-left:auto;font-size:15px;font-weight:500}
+.nv nav a{text-decoration:none;color:var(--mut)}.nv nav a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:13px 22px;border-radius:999px;font-weight:600;font-size:16px;text-decoration:none;border:1.5px solid transparent;cursor:pointer;transition:transform .2s,box-shadow .2s;font-family:inherit}
+.btn:hover{transform:translateY(-2px)}
+.b1{background:var(--g);color:#fff;box-shadow:0 8px 22px rgba(18,184,134,.35)}
+.b2{border-color:var(--ln);background:var(--sf);color:var(--ink)}
+.sm{padding:9px 16px;font-size:14px}
+.tg{width:40px;height:40px;border-radius:50%;border:1px solid var(--ln);background:var(--sf);color:var(--ink);cursor:pointer;display:grid;place-items:center}
+@media(max-width:820px){.nv nav{display:none}.nv .sm{margin-left:auto}}
+/* hero */
+.hero{padding:64px 0 40px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;width:640px;height:640px;right:-200px;top:-160px;background:radial-gradient(circle,rgba(18,184,134,.22),transparent 65%);pointer-events:none;animation:br 7s ease-in-out infinite alternate}
+@keyframes br{to{transform:scale(1.18) translate(-30px,20px)}}
+.hg{display:grid;grid-template-columns:1fr 1.05fr;gap:48px;align-items:center;position:relative;z-index:1}
+.ct{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.note{font-size:14px;color:var(--mut);margin-top:14px}
+@media(max-width:900px){.hg{grid-template-columns:1fr}}
+.rise>*{opacity:0;transform:translateY(22px);animation:up .8s cubic-bezier(.2,.7,.2,1) forwards}
+.rise>*:nth-child(2){animation-delay:.12s}.rise>*:nth-child(3){animation-delay:.24s}.rise>*:nth-child(4){animation-delay:.36s}
+@keyframes up{to{opacity:1;transform:none}}
+/* demo */
+.demo{display:grid;grid-template-columns:1fr 54px 1fr;align-items:center;gap:6px}
+.ph{background:var(--chat);border:1px solid var(--ln);border-radius:26px;padding:12px;min-height:330px;box-shadow:var(--sh);display:flex;flex-direction:column}
+.ph .tt{font-size:13px;font-weight:600;padding:4px 6px 10px;border-bottom:1px solid var(--ln);margin-bottom:12px;display:flex;justify-content:space-between;gap:6px}
+.ph .tt span{color:var(--mut);font-weight:400}
+.bb{background:var(--bub);border-radius:4px 14px 14px 14px;padding:10px 12px;font-size:13px;line-height:1.45;opacity:0;transform:translateY(12px) scale(.96);transition:all .5s cubic-bezier(.2,.8,.2,1);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.bb.out{background:var(--bubo);border-radius:14px 4px 14px 14px}
+.bb.on{opacity:1;transform:none}
+.bb em{font-style:normal;display:inline-block;padding:1px 6px;border-radius:6px;font-family:ui-monospace,monospace;font-size:12px;transition:all .5s}
+.bb .o{background:var(--badb);color:var(--bad)}
+.bb .m{background:var(--ac2);color:var(--ac)}
+.bb s{opacity:.6}
+.who{font-size:11px;color:var(--mut);margin-top:8px;opacity:0;transition:opacity .5s}.who.on{opacity:1}
+.mid{display:grid;place-items:center;position:relative;height:100%;min-height:60px}
+.mid svg{width:48px;height:48px}
+.mid .ln{position:absolute;left:0;right:0;top:50%;height:2px;background:repeating-linear-gradient(90deg,var(--ac) 0 6px,transparent 6px 12px);opacity:.35}
+.mid .pk{position:absolute;top:50%;left:0;width:12px;height:12px;border-radius:50%;background:var(--g);margin-top:-6px;opacity:0}
+.mid.go .pk{animation:fly 1s ease-in-out}
+@keyframes fly{0%{left:0;opacity:1}100%{left:calc(100% - 12px);opacity:1}}
+.mid .rb{position:relative;z-index:1;background:var(--bg);border-radius:50%;padding:3px}
+.mid.go .rb{animation:pl 1s}
+@keyframes pl{50%{transform:scale(1.25) rotate(-8deg)}}
+@media(max-width:560px){.demo{grid-template-columns:1fr;gap:10px}.mid{height:56px}.mid .ln{left:50%;right:auto;width:2px;height:100%;top:0;background:repeating-linear-gradient(0deg,var(--ac) 0 6px,transparent 6px 12px)}.mid .pk{display:none}.ph{min-height:0}}
+/* lojas */
+.st{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.st span{padding:9px 16px;border:1px solid var(--ln);background:var(--sf);border-radius:999px;font-weight:600;font-size:15px}
+/* problema */
+.pb{background:var(--sf);border-block:1px solid var(--ln)}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:44px;align-items:start}
+@media(max-width:860px){.pg{grid-template-columns:1fr}}
+.pl{list-style:none;padding:0;margin:0;display:grid;gap:14px}
+.pl li{display:flex;gap:14px;padding:16px 18px;border:1px solid var(--ln);border-radius:16px;background:var(--bg)}
+.pl i{flex:none;width:34px;height:34px;border-radius:10px;background:var(--badb);color:var(--bad);display:grid;place-items:center;font-style:normal;font-weight:800}
+.pl b{display:block;font-size:17px}.pl span{color:var(--mut);font-size:15px}
+.cal{background:var(--bg);border:1px solid var(--ln);border-radius:24px;padding:30px;box-shadow:var(--sh)}
+.cal label{font-weight:600;display:flex;justify-content:space-between}
+.cal input{width:100%;margin:18px 0 26px;accent-color:#12b886;height:28px}
+.big{font:800 clamp(52px,9vw,84px)/1 'Bricolage Grotesque',sans-serif;color:var(--ac);letter-spacing:-.04em}
+.cal small{color:var(--mut);display:block;margin-top:12px;font-size:13px}
+.bar{height:10px;border-radius:99px;background:var(--ln);margin-top:18px;overflow:hidden}.bar i{display:block;height:100%;background:var(--g);width:30%;transition:width .5s}
+/* como */
+.fl{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px;position:relative}
+.fl::before{content:"";position:absolute;left:8%;right:8%;top:30px;height:2px;background:var(--ln)}
+.fl::after{content:"";position:absolute;left:8%;top:30px;height:2px;width:0;background:var(--g);transition:width 1.6s ease .2s}
+.fl.on::after{width:84%}
+.fs{position:relative;z-index:1}
+.fs .n{width:60px;height:60px;border-radius:50%;background:var(--sf);border:2px solid var(--ac);display:grid;place-items:center;font:800 22px 'Bricolage Grotesque',Inter,sans-serif;color:var(--ac);margin-bottom:18px}
+.fs p{color:var(--mut);margin-top:8px;font-size:16px}
+@media(max-width:760px){.fl{grid-template-columns:1fr}.fl::before,.fl::after{display:none}}
+/* funções */
+.fx{display:grid;grid-template-columns:300px 1fr;gap:28px;margin-top:44px}
+.tabs{display:flex;flex-direction:column;gap:4px;max-height:540px;overflow:auto;padding-right:4px}
+.tabs button{all:unset;cursor:pointer;padding:12px 16px;border-radius:12px;font-weight:500;font-size:15px;color:var(--mut);transition:all .2s;box-sizing:border-box}
+.tabs button:hover{background:var(--ac2);color:var(--ink)}
+.tabs button[aria-selected=true]{background:var(--sf);color:var(--ink);font-weight:600;box-shadow:var(--sh);border-left:4px solid var(--ac)}
+.tabs button:focus-visible{outline:3px solid var(--ac)}
+.pn{background:var(--sf);border:1px solid var(--ln);border-radius:24px;padding:34px;min-height:340px;box-shadow:var(--sh)}
+.pn .ic{width:54px;height:54px;border-radius:16px;background:var(--ac2);color:var(--ac);display:grid;place-items:center;margin-bottom:18px}
+.pn .ic svg{width:28px;height:28px}
+.pn p{color:var(--mut);margin-top:12px}
+.pn ul{margin:18px 0 0;padding:0;list-style:none;display:grid;gap:9px}
+.pn li{padding-left:28px;position:relative;font-size:16px}
+.pn li::before{content:"";position:absolute;left:0;top:.5em;width:14px;height:8px;border-left:2.5px solid var(--ac);border-bottom:2.5px solid var(--ac);transform:rotate(-45deg) translateY(-3px)}
+.sw{animation:sw .45s cubic-bezier(.2,.8,.2,1)}@keyframes sw{from{opacity:0;transform:translateX(18px)}}
+@media(max-width:860px){.fx{grid-template-columns:1fr}.tabs{flex-direction:row;overflow-x:auto;max-height:none;padding-bottom:6px}.tabs button{white-space:nowrap;flex:none}}
+/* planos */
+.pr{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px;align-items:stretch}
+.pc{background:var(--sf);border:1px solid var(--ln);border-radius:26px;padding:30px;display:flex;flex-direction:column;position:relative}
+.pc.hl{border:2px solid var(--ac);box-shadow:var(--sh);transform:translateY(-10px)}
+.pc .tag{position:absolute;top:-14px;left:26px;background:var(--g);color:#fff;font-size:13px;font-weight:600;padding:4px 12px;border-radius:99px;max-width:calc(100% - 52px);line-height:1.35}
+.pc.rec{border:2px solid var(--ac)}
+.pc .p2t{background:var(--ac2);color:var(--ac);border-radius:12px;padding:10px 14px;font-size:14px;font-weight:600;margin:-6px 0 20px}
+.pc .p2t small{display:block;font-weight:400;color:var(--mut);font-size:13px;margin-top:2px}
+.pc .pv{font:800 44px/1 'Bricolage Grotesque',Inter,sans-serif;margin:18px 0 4px;letter-spacing:-.03em}
+.pc .pv small{font:500 15px Inter;color:var(--mut);letter-spacing:0}
+.pc .dd{color:var(--mut);font-size:14px;margin-bottom:20px}
+.pc ul{list-style:none;padding:0;margin:0 0 26px;display:grid;gap:10px;flex:1}
+.pc li{font-size:15px;display:flex;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--ln)}
+.pc li span{color:var(--mut)}.pc li b{text-align:right;font-weight:600}
+.pc li.no b{color:var(--mut);font-weight:400}
+@media(min-width:901px){.pc.hl.rv.on{transform:translateY(-10px)}}
+@media(max-width:900px){.pr{grid-template-columns:1fr}.pc.hl{transform:none}}
+/* segurança */
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:40px}
+.sg div{padding:24px;border:1px solid var(--ln);border-radius:20px;background:var(--sf)}
+.sg p{color:var(--mut);font-size:15px;margin-top:8px}
+.warn{margin-top:22px;padding:18px 22px;border-radius:16px;background:var(--badb);color:var(--ink);border:1px solid var(--bad);font-size:15px}
+@media(max-width:860px){.sg{grid-template-columns:1fr}}
+/* faq */
+details{border-bottom:1px solid var(--ln);padding:20px 0;max-width:780px}
+summary{cursor:pointer;font:600 19px 'Bricolage Grotesque',Inter,sans-serif;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:26px;line-height:1;color:var(--ac);transition:transform .3s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--mut);margin-top:12px;animation:sw .4s}
+/* cta */
+.cta{background:var(--g);color:#fff;border-radius:32px;padding:64px 40px;text-align:center;position:relative;overflow:hidden}
+.cta h2{margin:0 auto;color:#fff}.cta p{max-width:30em;margin:16px auto 0;opacity:.92;font-size:19px}
+.cta .ct{justify-content:center}
+.cta .b2{background:#fff;color:#0a5f56;border-color:#fff}
+.cta .b3{border-color:rgba(255,255,255,.7);color:#fff}
+.cta::before,.cta::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.1);animation:fl 9s ease-in-out infinite alternate}
+.cta::before{width:300px;height:300px;left:-90px;top:-120px}.cta::after{width:240px;height:240px;right:-60px;bottom:-110px;animation-delay:-4s}
+@keyframes fl{to{transform:translate(30px,24px) scale(1.12)}}
+footer{padding:36px 0 60px;color:var(--mut);font-size:14px;text-align:center}
+.wa{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:55;width:58px;height:58px;border-radius:50%;background:var(--wa);display:grid;place-items:center;box-shadow:0 8px 24px rgba(37,211,102,.5);animation:pu 2.4s infinite}
+.wa svg{width:30px;height:30px;fill:#fff}
+@keyframes pu{0%{box-shadow:0 0 0 0 rgba(37,211,102,.55)}70%,100%{box-shadow:0 0 0 18px rgba(37,211,102,0)}}
+
+/* CONFIGURE AQUI: endereço do painel (ex.: https://painel.seudominio.com.br). Vazio = botões abrem o WhatsApp. */
+const APP_URL='';
+/* Contadores opcionais: preencha com números REAIS do seu painel e mude mostrar para true. */
+const STATS={mostrar:false,afiliados:0,mensagens:0,links:0,grupos:0};
+$$('[data-app]').forEach(a=>{if(APP_URL){a.href=APP_URL.replace(/\/$/,'')+'/?cadastro=1';a.target='_self'}else{a.target='_blank';a.rel='noopener'}});
+if(STATS.mostrar){const f=n=>n.toLocaleString('pt-BR');$('#sx').innerHTML=[[STATS.afiliados,'afiliados cadastrados'],[STATS.mensagens,'mensagens enviadas'],[STATS.links,'links convertidos'],[STATS.grupos,'grupos atendidos']].map(x=>`<div><b>${f(x[0])}</b><span>${x[1]}</span></div>`).join('')}
+/* reveal */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s,transform .7s cubic-bezier(.2,.7,.2,1)}
+.rv.on{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.fp,.fc{display:none}*,*::before,*::after{animation:none!important;transition:none!important}.rv,.rise>*,.bb,.who{opacity:1!important;transform:none!important}html{scroll-behavior:auto}}
+#pg{position:fixed;top:env(safe-area-inset-top,0px);left:0;height:3px;width:0;background:var(--g);z-index:70}
+.b1{position:relative;overflow:hidden}.b1::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);animation:sh 3.6s ease-in-out infinite}
+@keyframes sh{0%,55%{left:-60%}100%{left:130%}}
+.fp{position:absolute;left:0;top:90px;width:46px;height:46px;z-index:0;pointer-events:none;animation:fpl 15s linear infinite}
+@keyframes fpl{0%{transform:translate(-8vw,160px) rotate(12deg);opacity:0}8%{opacity:.9}50%{transform:translate(50vw,20px) rotate(-6deg)}92%{opacity:.9}100%{transform:translate(105vw,-30px) rotate(-14deg);opacity:0}}
+.fc{position:absolute;z-index:0;padding:6px 14px;border-radius:99px;background:var(--sf);border:1px solid var(--ln);font-weight:600;font-size:13px;box-shadow:var(--sh);animation:bob 4.5s ease-in-out infinite alternate}
+.fc:nth-of-type(1){left:44%;top:46px}.fc:nth-of-type(2){left:49%;bottom:30px;animation-delay:-2s}.fc:nth-of-type(3){right:3%;top:20px;animation-delay:-1s}.fc:nth-of-type(4){left:4%;bottom:14px;animation-delay:-3s}
+@keyframes bob{to{transform:translateY(-16px) rotate(2deg)}}
+@media(max-width:900px){.fc{display:none}}
+.ty{display:flex;gap:4px;padding:12px 14px;background:var(--bubo);border-radius:14px 4px 14px 14px;width:56px;margin-bottom:-40px;opacity:0;transition:opacity .2s}
+.ty.on{opacity:1}.ty i{width:7px;height:7px;border-radius:50%;background:var(--ac);animation:dt 1s infinite}.ty i:nth-child(2){animation-delay:.15s}.ty i:nth-child(3){animation-delay:.3s}
+@keyframes dt{50%{transform:translateY(-5px);opacity:.4}}
+.mq{overflow:hidden;margin-top:30px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.mt{display:flex;width:max-content;animation:mq 24s linear infinite}.mq:hover .mt{animation-play-state:paused}
+.mt span{margin-right:10px;padding:10px 22px;border:1px solid var(--ln);background:var(--sf);border-radius:999px;font-weight:600;font-size:16px;white-space:nowrap}
+@keyframes mq{to{transform:translateX(-50%)}}
+.fl.on .n{animation:pop .6s cubic-bezier(.3,1.6,.5,1) both}.fl.on .fs:nth-child(2) .n{animation-delay:.6s}.fl.on .fs:nth-child(3) .n{animation-delay:1.2s}
+@keyframes pop{from{transform:scale(.3);opacity:0}}
+.sp{position:relative}.sp::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(18,184,134,.15),transparent 70%);opacity:0;transition:opacity .3s;pointer-events:none}.sp:hover::before{opacity:1}
+.tabs{position:relative}.pc:hover{border-color:var(--ac)}
+.pc.hl::after{content:"";position:absolute;inset:-2px;border-radius:28px;border:2px solid var(--ac);animation:ring 2.6s ease-out infinite;pointer-events:none}
+@keyframes ring{0%{opacity:.8;transform:scale(1)}100%{opacity:0;transform:scale(1.05)}}
+
+/* stats, blog e telas do app */
+.sx{padding:0 0 10px}.sxg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.sxg div{background:var(--sf);border:1px solid var(--ln);border-radius:18px;padding:18px 20px}.sxg b{display:block;font:800 clamp(26px,4vw,38px)/1.1 'Bricolage Grotesque',sans-serif;color:var(--ac)}.sxg span{color:var(--mut);font-size:14px}
+@media(max-width:760px){.sxg{grid-template-columns:1fr 1fr}}
+.old{color:var(--mut);font-size:14px;margin-top:16px}.old s{opacity:.8}.old b{color:#fff;background:var(--g);padding:2px 9px;border-radius:99px;font-size:12px;margin-left:6px}.pc .old+.pv{margin-top:4px}
+.bl{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:40px}@media(max-width:760px){.bl{grid-template-columns:1fr}}
+.bl details{max-width:none;border:1px solid var(--ln);border-radius:20px;background:var(--sf);padding:22px 24px}.bl small{color:var(--ac);font-weight:600;font-size:13px;display:block;margin-bottom:6px}.bl summary{font-size:20px}.bl details p{font-size:16px}.bl ul{color:var(--mut);margin:12px 0 0;padding-left:20px;font-size:15.5px}
+.app{--bg:#0a1118;--sf:#121c27;--ink:#e9eef3;--mut:#8c9aa9;--ln:#1f2c3a;--ac:#2fd4a7;--ac2:#12302a;margin-top:24px;border:1px solid var(--ln);border-radius:16px;overflow:hidden;background:var(--bg);color:var(--ink);font-size:13px;line-height:1.45;display:grid;grid-template-columns:150px 1fr}
+.app .sd{background:#0b141d;padding:14px 10px;border-right:1px solid var(--ln)}.app .sd b{display:block;font:700 16px 'Bricolage Grotesque',sans-serif;padding:0 8px 10px}.app .sd b i{color:var(--ac);font-style:normal}.app .sd span{display:block;padding:7px 9px;border-radius:8px;color:#aab6c5;font-size:12px}.app .sd span.on{background:var(--ac2);color:var(--ac);font-weight:600}
+.app .mn{padding:16px;min-width:0}.app h4{font:700 18px 'Bricolage Grotesque',sans-serif;margin:0}.app .as{color:var(--mut);margin:2px 0 12px;font-size:12px}
+.app .bx{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:12px;margin-bottom:10px}.app .bx h5{margin:0 0 8px;font:700 14px 'Bricolage Grotesque',sans-serif}
+.app .in{background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:7px 10px;color:var(--mut);margin-bottom:8px}.app .lb{font-weight:600;font-size:12px;margin-bottom:3px}
+.app .bt{display:inline-block;background:var(--g);color:#fff;border-radius:8px;padding:7px 12px;font-weight:600;font-size:12px;margin-right:6px}.app .bt.s{background:var(--ac2);color:var(--ac)}
+.app .gr{display:grid;grid-template-columns:1fr 54px 54px;gap:6px;padding:7px 0;border-bottom:1px solid var(--ln)}.app .ck{width:15px;height:15px;border-radius:4px;border:2px solid var(--ln);display:inline-block;vertical-align:middle}.app .ck.ok{background:var(--ac);border-color:var(--ac)}
+.app .kp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}.app .kp .bx{margin:0;padding:10px}.app .kp b{font:700 22px 'Bricolage Grotesque',sans-serif;display:block}.app .kp span{color:var(--mut);font-size:11px}
+.app .bars{display:flex;align-items:flex-end;gap:4px;height:90px}.app .bars i{flex:1;background:#1f5f4e;border-radius:3px 3px 0 0}.app .bars i.h{background:var(--g)}
+.app .msgp{white-space:pre-wrap;background:var(--bg);border:1px solid var(--ln);border-radius:10px;padding:10px}
+.app .tip{background:var(--ac2);border-radius:8px;padding:8px 10px;margin-bottom:8px}
+.app .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cap{color:var(--mut);font-size:12.5px;margin-top:8px}
+@media(max-width:620px){.app{grid-template-columns:1fr}.app .sd{display:none}.app .two{grid-template-columns:1fr}.app .kp{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#12b886"/><stop offset="1" stop-color="#0a8f9a"/></linearGradient></defs></svg>
+
+<div id="pg"></div>
+<header><div class="w nv">
+  <a class="logo" href="#topo" aria-label="Linkfly"><svg viewBox="0 0 40 40"><rect width="40" height="40" rx="11" fill="url(#lg)"/><path d="M9 21 31 10l-5 21-7-6-4 5-1-8z" fill="#fff"/></svg>Linkfly</a>
+  <nav aria-label="Principal"><a href="#problema">O problema</a><a href="#como">Como funciona</a><a href="#funcoes">Funções</a><a href="#planos">Planos</a><a href="#blog">Blog</a><a href="#faq">Dúvidas</a></nav>
+  <button class="tg" id="tema" aria-label="Alternar tema claro e escuro"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  <a class="btn b1 sm" data-app href="https://wa.me/5581973295943?text=Ol%C3%A1!%20Quero%20testar%20o%20Linkfly%20gr%C3%A1tis%20por%2010%20dias.">Testar grátis</a>
+</div></header>
+
+<main id="topo">
+<section class="hero"><svg class="fp" viewBox="0 0 40 40" aria-hidden="true"><path d="M9 21 31 10l-5 21-7-6-4 5-1-8z" fill="url(#lg)"/></svg><div class="w hg">
+  <div class="rise">
+    <h1>Suas ofertas postadas nos grupos, sem você copiar e colar</h1>
+    <p class="lead">O Linkfly vigia os grupos de ofertas, troca os links pelos seus de afiliado e posta nos seus grupos de WhatsApp. Sozinho, o dia inteiro.</p>
+    <div class="ct"><a class="btn b1" data-app href="https://wa.me/5581973295943?text=Ol%C3%A1!%20Quero%20testar%20o%20Linkfly%20gr%C3%A1tis%20por%2010%20dias.">Criar conta grátis</a><a class="btn b2" href="#como">Ver como funciona</a><a class="btn b2" target="_blank" rel="noopener" href="https://wa.me/5581973295943?text=Ol%C3%A1!%20Quero%20testar%20o%20Linkfly%20gr%C3%A1tis%20por%2010%20dias.">Falar no WhatsApp</a></div>
+    <p class="note">10 dias de teste grátis e 5 dias do Plano Pro para conhecer tudo. Sem cartão para começar.</p>
+  </div>
+  <div class="demo" id="demo" aria-label="Demonstração animada: uma oferta chega e é postada com o seu link">
+    <div class="ph"><div class="tt">Grupo de ofertas <span>origem</span></div>
+      <div class="bb" id="b1">🔥 Fone Bluetooth<br>De R$ 149,90 por <b>R$ 89,90</b><br>amazon.com.br/dp/B0X?tag=<em class="o">outra-pessoa-20</em></div><div class="who" id="w1">Link de outro afiliado</div></div>
+    <div class="mid" id="mid"><div class="ln"></div><div class="pk"></div><div class="rb"><svg viewBox="0 0 40 40"><rect width="40" height="40" rx="11" fill="url(#lg)"/><path d="M9 21 31 10l-5 21-7-6-4 5-1-8z" fill="#fff"/></svg></div></div>
+    <div class="ph"><div class="tt">Seu grupo <span>destino</span></div>
+      <div class="ty" id="ty"><i></i><i></i><i></i></div><div class="bb out" id="b2">🔥 Fone Bluetooth<br>💰 De <s>R$ 149,90</s> por <b>R$ 89,90</b> (40% OFF)<br>🛒 amazon.com.br/dp/B0X?tag=<em class="m">seu-id-20</em></div><div class="who" id="w2">Postado pelo Linkfly com o seu ID</div></div>
+  </div>
+</div></section>
+
+<section class="sx"><div class="w"><div class="sxg" id="sx"><div><b>6</b><span>lojas com link de afiliado</span></div><div><b>24 h</b><span>robô postando por você</span></div><div><b>10 dias</b><span>de teste grátis</span></div><div><b>R$ 35,90</b><span>Plano Plus, por mês</span></div></div></div></section>
+<section class="pb" id="problema"><div class="w">
+  <h2>Quem vive de afiliado sabe como é o dia a dia</h2>
+  <p class="lead">A oferta boa aparece, mas só rende comissão se for postada rápido e com o seu link. Fazer isso na mão consome o dia.</p>
+  <div class="pg">
+    <ul class="pl">
+      <li class="rv"><i>1</i><div><b>Copiar, trocar e colar, de novo e de novo</b><span>Cada oferta pede abrir a loja, gerar o link e ajustar o texto.</span></div></li>
+      <li class="rv"><i>2</i><div><b>A oferta esfria enquanto você trabalha</b><span>Cupom acaba, preço volta. Quem posta primeiro vende.</span></div></li>
+      <li class="rv"><i>3</i><div><b>Grupos parados e horários vazios</b><span>Ninguém consegue postar às 7h, no almoço e às 22h todos os dias.</span></div></li>
+      <li class="rv"><i>4</i><div><b>Sem saber qual grupo realmente vende</b><span>Tudo vira um número só no relatório da loja.</span></div></li>
+      <li class="rv"><i>5</i><div><b>Medo de bloqueio por postar demais e rápido</b><span>Mandar tudo de uma vez chama a atenção do WhatsApp.</span></div></li>
+    </ul>
+    <div class="cal rv">
+      <label for="qtd">Ofertas que você posta por dia <b id="qv">30</b></label>
+      <input id="qtd" type="range" min="5" max="100" step="5" value="30">
+      <p>Tempo que você recupera por mês</p>
+      <div class="big"><span id="hrs">45</span> h</div>
+      <div class="bar"><i id="br"></i></div>
+      <small>Estimativa com 3 minutos por oferta feita à mão. O tempo real varia de pessoa para pessoa.</small>
+    </div>
+  </div>
+</div></section>
+
+<section id="como"><div class="w">
+  <h2>O Linkfly faz o trabalho repetitivo por você</h2>
+  <p class="lead">Você configura uma vez. Depois o robô copia, troca o link, monta a mensagem e posta, respeitando intervalos seguros.</p>
+  <div class="fl" id="fl">
+    <div class="fs"><div class="n">1</div><h3>Conecte o WhatsApp</h3><p>Leia o QR code, como no WhatsApp Web, e carregue seus grupos.</p></div>
+    <div class="fs"><div class="n">2</div><h3>Escolha os grupos e as lojas</h3><p>Marque de onde copiar e onde postar. Cadastre seus IDs de afiliado.</p></div>
+    <div class="fs"><div class="n">3</div><h3>Ative o robô</h3><p>Ele troca os links, cria a mensagem e posta. Você acompanha tudo no painel.</p></div>
+  </div>
+  <div class="mq rv"><div class="mt"><span>Amazon</span><span>Mercado Livre</span><span>Magalu</span><span>Shopee</span><span>AliExpress</span><span>Shein</span><span>Amazon</span><span>Mercado Livre</span><span>Magalu</span><span>Shopee</span><span>AliExpress</span><span>Shein</span></div></div>
+</div></section>
+
+<section id="funcoes" style="background:var(--sf);border-block:1px solid var(--ln)"><div class="w">
+  <h2>Tudo o que o Linkfly faz, função por função</h2>
+  <div class="fx"><div class="tabs" id="tabs" role="tablist" aria-label="Funções"></div><div class="pn" id="pn" role="tabpanel" aria-live="polite"></div></div>
+</div></section>
+
+<section id="planos"><div class="w">
+  <h2>Comece de graça e cresça quando fizer sentido</h2>
+  <p class="lead">Todo cadastro novo ganha 10 dias de teste, e você ainda pode testar o Plano Pro por 5 dias, grátis, para conhecer tudo. Depois, escolha o plano que cabe na sua operação.</p>
+  <div class="pr" id="pr"></div>
+</div></section>
+
+<section id="blog" style="background:var(--sf);border-block:1px solid var(--ln)"><div class="w">
+  <h2>Blog: dicas para afiliados que querem vender mais</h2>
+  <p class="lead">Conteúdo prático sobre grupos de ofertas, marketing e rotina de afiliado.</p>
+  <div class="bl">
+    <details class="rv"><summary><span><small>Marketing</small>Como montar um grupo de ofertas que as pessoas não silenciam</span></summary><p>Grupo cheio de mensagem repetida vira grupo silenciado. Defina um nicho (casa, tecnologia, moda), poste só oferta com desconto de verdade e mantenha um padrão visual.</p><ul><li>Combine foto, preço de e por, desconto e link em toda mensagem</li><li>Evite mais de uma oferta do mesmo produto no dia</li><li>Fixe uma mensagem com as regras do grupo</li></ul></details>
+    <details class="rv"><summary><span><small>Afiliados</small>Os melhores horários para postar ofertas</span></summary><p>O pico costuma ser de manhã cedo (7h às 9h), no almoço e à noite (20h às 22h). Teste por duas semanas e veja nos cliques quais horários rendem no seu público.</p><ul><li>Concentre as postagens nas horas de maior atividade</li><li>Deixe o robô segurar ofertas fora do horário na fila</li><li>Compare os resultados semana a semana</li></ul></details>
+    <details class="rv"><summary><span><small>Estratégia</small>Como descobrir qual grupo realmente vende</span></summary><p>Se você posta em vários grupos, o relatório da loja vira um número só. Use um Sub ID diferente por grupo na Shopee e cliques por link para ver quem converte, e invista tempo onde há retorno.</p><ul><li>Um Sub ID por grupo de destino</li><li>Olhe cliques e vendas, não só membros</li><li>Pause os grupos que não respondem</li></ul></details>
+    <details class="rv"><summary><span><small>Segurança</small>Como reduzir o risco de bloqueio no WhatsApp</span></summary><p>Nenhum cuidado elimina o risco, mas ajuda muito: use um chip dedicado, aqueça o número aos poucos, varie o intervalo e as mensagens e não poste tudo de uma vez.</p><ul><li>Comece com poucas postagens por dia e aumente</li><li>Intervalos maiores são mais seguros</li><li>Não use o seu número pessoal</li></ul></details>
+    <details class="rv"><summary><span><small>Marketing</small>Cupom e urgência: o que realmente funciona</span></summary><p>Cupom válido e prazo curto aumentam o clique, mas só se forem verdadeiros. Informe o cupom em linha própria e retire ofertas que já acabaram para manter a confiança do grupo.</p><ul><li>Use urgência só quando houver prazo real</li><li>Confira o preço antes de postar</li><li>Responda dúvidas rápido nos grupos</li></ul></details>
+    <details class="rv"><summary><span><small>Rotina</small>Quanto tempo você perde postando na mão</span></summary><p>Com 30 ofertas por dia e 3 minutos cada, são cerca de 45 horas por mês. Automatizar o repetitivo libera tempo para escolher bons nichos, cuidar da comunidade e crescer.</p><ul><li>Automatize copiar, trocar e postar</li><li>Use o tempo livre para divulgar o grupo</li><li>Revise o desempenho toda semana</li></ul></details>
+  </div>
+</div></section>
+
+<section><div class="w">
+  <h2>Feito para trabalhar com cuidado</h2>
+  <div class="sg">
+    <div class="rv"><h3>Proteção anti-bloqueio</h3><p>Intervalo entre envios, aquecimento do número, variação das mensagens e limite diário por plano.</p></div>
+    <div class="rv"><h3>Dados protegidos</h3><p>Seu segredo da Shopee é guardado criptografado, a sessão tem validade e o robô só acessa endereços públicos.</p></div>
+    <div class="rv"><h3>Cada cliente no seu espaço</h3><p>Você conecta o seu próprio número e usa só os seus grupos, links e relatórios.</p></div>
+  </div>
+  <p class="warn rv">Atenção: nenhum intervalo elimina totalmente o risco de bloqueio no WhatsApp. Por isso, recomendamos usar um chip dedicado. O Linkfly também não garante comissão: ele economiza o seu tempo e aumenta a sua presença com o seu link.</p>
+</div></section>
+
+<section id="faq"><div class="w">
+  <h2>Dúvidas frequentes</h2>
+  <div style="margin-top:32px">
+    <details><summary>Preciso saber de tecnologia?</summary><p>Não. O painel é guiado: tem primeiros passos, tela de boas-vindas e a assistente Mariana para tirar dúvidas básicas.</p></details>
+    <details><summary>O teste grátis tem custo?</summary><p>Não. São 10 dias, com o robô ativo por até 3 horas por dia. Se você não assinar, o robô apenas pausa.</p></details>
+    <details><summary>Posso testar o Plano Pro antes de assinar?</summary><p>Pode. Cada conta tem 5 dias de teste grátis do Plano Pro, com todos os recursos: até 10 grupos, envios ilimitados, robô o dia todo, busca de ofertas mais rápida e relatórios. Você ativa em um toque no menu Planos do painel, e só pode usar uma vez.</p></details>
+    <details><summary>O que acontece quando o teste do Plano Pro termina?</summary><p>Nada é cobrado. A conta volta ao plano que você já tinha (grátis ou Plano Plus), sem perder as suas configurações, e você escolhe se quer assinar. Um aviso chega por e-mail um dia antes.</p></details>
+    <details><summary>O Linkfly coloca anúncio nos meus grupos?</summary><p>Nos planos grátis e Plus, o Linkfly posta um aviso curto sobre o próprio robô a cada 20 ofertas enviadas. O Plano Pro não tem anúncios.</p></details>
+    <details><summary>Posso usar o meu número pessoal?</summary><p>É possível, mas o ideal é um chip dedicado, porque o WhatsApp pode bloquear números que usam automação.</p></details>
+    <details><summary>Em quais lojas funciona?</summary><p>Amazon, Mercado Livre, Magalu, Shopee, AliExpress e Shein. Para a Shopee, o Linkfly ainda busca ofertas sozinho por palavra-chave.</p></details>
+    <details><summary>Como pago e posso cancelar?</summary><p>A cobrança é mensal, pela plataforma de pagamento. Em caso de cancelamento, o acesso segue até o fim do período pago.</p></details>
+    <details><summary>Como falo com vocês?</summary><p>Pelo WhatsApp (81) 97329-5943 ou pelo Instagram @linkfly_app.</p></details>
+  </div>
+</div></section>
+
+<section style="padding-top:0"><div class="w"><div class="cta rv">
+  <h2>Deixe o robô postar enquanto você cuida do que importa</h2>
+  <p>Crie a sua conta em um minuto, comece o seu teste de 10 dias e experimente o Plano Pro por 5 dias, grátis.</p>
+  <div class="ct"><a class="btn b2" data-app href="https://wa.me/5581973295943?text=Ol%C3%A1!%20Quero%20testar%20o%20Linkfly%20gr%C3%A1tis%20por%2010%20dias.">Criar conta grátis</a><a class="btn b3" href="https://wa.me/5581973295943?text=Ol%C3%A1!%20Quero%20testar%20o%20Linkfly%20gr%C3%A1tis%20por%2010%20dias." target="_blank" rel="noopener">WhatsApp (81) 97329-5943</a><a class="btn b3" href="https://instagram.com/linkfly_app" target="_blank" rel="noopener">Instagram @linkfly_app</a></div>
+</div></div></section>
+</main>
+<footer><div class="w">Linkfly. Automação de ofertas para afiliados. Contato: (81) 97329-5943, @linkfly_app.</div></footer>
+
+<a class="wa" href="https://wa.me/5581973295943?text=Ol%C3%A1!%20Quero%20conhecer%20o%20Linkfly." target="_blank" rel="noopener" aria-label="Falar no WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm-3 5.500c.3-.3.700-.3 1 .1l.8 1.800c.1.300 0 .6-.2.800l-.5.600c.8 1.600 2 2.700 3.600 3.500l.6-.7c.2-.3.600-.3.900-.2l1.800.9c.3.200.4.500.2.900-.4 1-1.400 1.600-2.500 1.400-3.200-.7-5.800-3.200-6.600-6.400-.1-.9.200-1.800.9-2.200z"/></svg></a>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+/* tema */
+$('#tema').onclick=()=>{const d=document.documentElement,dark=d.dataset.theme?d.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;d.dataset.theme=dark?'light':'dark'};
+/* demo animada em loop */
+(function(){const s=['b1','w1','go','b2','w2'],ids=s.map(i=>$('#'+i)),mid=$('#mid');
+ const on=()=>{ids[0].classList.add('on');ids[1].classList.add('on')};
+ if(RM){['b1','w1','b2','w2'].forEach(i=>$('#'+i).classList.add('on'));return}
+ function run(){['b1','w1','b2','w2'].forEach(i=>$('#'+i).classList.remove('on'));mid.classList.remove('go');
+  setTimeout(()=>{$('#b1').classList.add('on');$('#w1').classList.add('on')},500);
+  setTimeout(()=>{mid.classList.add('go');$('#ty').classList.add('on')},2000);
+  setTimeout(()=>{$('#ty').classList.remove('on');$('#b2').classList.add('on');$('#w2').classList.add('on')},3000);
+  setTimeout(run,8200)}
+ run()})();
+/* calculadora */
+const q=$('#qtd');function calc(){const n=+q.value,h=n*3*30/60;$('#qv').textContent=n;$('#br').style.width=(n/100*100)+'%';anim($('#hrs'),h)}
+let cur=45;function anim(el,to){const f=cur,t0=performance.now();cur=to;if(RM){el.textContent=Math.round(to);return}(function st(t){const p=Math.min((t-t0)/500,1);el.textContent=Math.round(f+(to-f)*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(st)})(t0)}
+q.oninput=calc;calc();
+/* funções */
+const I={r:'<path d="M3 12a9 9 0 0 1 15-6.700L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.700L3 16M3 21v-5h5"/>',s:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.300-4.300"/>',z:'<path d="M13 2 3 14h8l-1 8 10-12h-8z"/>',m:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',c:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',sh:'<path d="M12 2 4 5v6c0 5 3.400 9 8 11 4.600-2 8-6 8-11V5z"/>',t:'<path d="M20.600 13.400 13.400 20.600a2 2 0 0 1-2.800 0L2 12V2h10l8.600 8.600a2 2 0 0 1 0 2.800zM7 7h.01"/>',b:'<path d="M3 3v18h18M7 15l4-4 3 3 5-6"/>',h:'<path d="M3 12h4l3-8 4 16 3-8h4"/>',l:'<path d="M4 6h16M4 12h16M4 18h10"/>',u:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',p:'<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>'};
+const F=[
+['Copiar e postar automático','r','O robô lê as ofertas dos grupos de origem e posta nos seus grupos de destino, já com o seu link.',['Troca o link pelo seu ID em Amazon, Mercado Livre, Magalu, AliExpress e Shein','Remove links de outros afiliados e de lojas sem ID cadastrado','Leva também a foto da oferta']],
+['Busca de ofertas Shopee','s','Conecte a sua conta de afiliado Shopee e deixe o robô procurar ofertas por palavra-chave.',['Defina palavras-chave, desconto mínimo e quantas ofertas por busca','Busca de 30 min a 2 h, conforme o plano','O segredo da Shopee fica criptografado']],
+['Enviar agora','z','Quer postar uma oferta específica? Cole só o link e o Linkfly monta tudo.',['Busca título, preço e foto na página do produto','Usa o seu modelo de mensagem, com topo, rodapé e cupom','Mostra uma prévia exata antes de enviar','Plano Plus: 5 por dia. Plano Pro: ilimitado']],
+['Mensagens e cupom','m','Escolha como as ofertas aparecem nos seus grupos.',['3 modelos prontos: clássico, mínimo e urgência','Mensagem personalizada nos planos pagos','Campo de cupom e variação para não repetir texto igual']],
+['Horários de pico','c','Concentre as postagens nas horas em que o seu público está ativo.',['Escolha os horários nos planos pagos','Ofertas fora do horário esperam na fila','Limite de envios por dia respeitado']],
+['Proteção do número','sh','Camadas de cuidado para reduzir o risco de bloqueio.',['Intervalo de 10 s, 30 s ou 1 min entre envios, conforme o plano','Aquecimento gradual e variação das mensagens','Aviso claro sobre o risco de cada intervalo']],
+['Sub ID por grupo','t','Descubra qual grupo realmente vende.',['Cada grupo de destino ganha um código próprio no link da Shopee','No relatório da Shopee, a coluna Sub ID mostra o grupo que vendeu','Sub ID personalizado no Plano Pro']],
+['Desempenho e cliques','b','Acompanhe postagens, links enviados e cliques.',['Histórico completo do que foi enviado','Exportação em CSV no Plano Pro','Contagem de cliques em servidor com endereço fixo']],
+['Seu robô está funcionando?','h','Um painel de saúde mostra se está tudo certo.',['Status do WhatsApp, do robô e do recebimento de mensagens','Resultado do último envio','Botão direto para o próximo passo']],
+['Fila e resumo da semana','l','Veja o que vai ser postado e o que aconteceu.',['Fila mostra por que cada oferta espera: pico, limite ou intervalo','Resumo de segunda a domingo com grupo campeão','Resumo semanal disponível no Plano Pro']],
+['Mariana, a assistente','u','Uma assistente no canto da tela que responde dúvidas básicas.',['Ajuda com conexão, grupos, lojas, Sub ID e assinatura','Confere o estado real do seu robô','Sem custo extra']],
+['Painel no celular','p','Use no computador ou no celular, no tema claro ou escuro.',['Boas-vindas guiadas e primeiros passos em 5 etapas','Abre no navegador e dá para adicionar à tela inicial','A escolha de tema vale em qualquer aparelho']]];
+
+const AP=(t,sub,nav,body)=>`<div class="app"><div class="sd"><b>Link<i>fly</i></b>${['Desempenho','Enviar agora','Fila de envio','WhatsApp e grupos','Lojas','Mensagens','Horários','Automação','Planos'].map(n=>`<span class="${n===nav?'on':''}">${n}</span>`).join('')}</div><div class="mn"><h4>${t}</h4><p class="as">${sub}</p>${body}</div></div><p class="cap">Tela do painel do Linkfly, com dados de exemplo.</p>`;
+const G=(n,a,b)=>`<div class="gr"><span>${n}</span><span><i class="ck${a?' ok':''}"></i> Copiar</span><span><i class="ck${b?' ok':''}"></i> Postar</span></div>`;
+F[0][4]=AP('WhatsApp e grupos','Conecte seu número, escolha de quais grupos copiar e em quais postar.','WhatsApp e grupos',`<div class="bx"><h5>2. Escolher grupos</h5>${G('Achadinhos Tech',1,0)}${G('Ofertas Relâmpago BR',1,0)}${G('Meu grupo VIP',0,1)}<div style="margin-top:10px"><span class="bt s">Carregar meus grupos</span><span class="bt">Salvar grupos</span></div></div>`);
+F[1][4]=AP('Automação','O robô copia dos grupos de origem e também procura ofertas sozinho.','Automação',`<div class="bx"><h5>Ofertas automáticas (Shopee)</h5><div class="two"><div><div class="lb">Buscar novas ofertas</div><div class="in">a cada 1 hora</div></div><div><div class="lb">Desconto mínimo</div><div class="in">30%</div></div></div><div class="lb">Palavras-chave</div><div class="in">fone, air fryer</div><span class="bt">Salvar</span><span class="bt s">Ativar busca de ofertas</span></div>`);
+F[3][4]=AP('Mensagens','Monte o visual das ofertas que o robô posta no seu grupo.','Mensagens',`<div class="two"><div class="bx"><h5>Seu modelo</h5><div class="lb">Estilo</div><div class="in">Urgência</div><div class="lb">Cupom</div><div class="in">BLACK10</div><span class="bt">Salvar mensagem</span></div><div class="bx"><h5>Prévia</h5><div class="msgp">🔥 Fone Bluetooth\n💰 De R$ 149,90 por R$ 89,90\n🎟 Cupom: BLACK10\n🛒 sua-loja.link/x8k2</div></div></div>`);
+F[5][4]=AP('Automação','Proteção do número','Automação',`<div class="bx"><h5>Proteção do número</h5><div class="lb">Máximo de postagens por dia</div><div class="in">150</div><div><i class="ck ok"></i> Aquecimento gradual</div><div style="margin:6px 0 10px"><i class="ck ok"></i> Variar o intervalo entre postagens</div><span class="bt">Salvar proteção</span></div>`);
+F[7][4]=AP('Desempenho','Como suas ofertas estão rendendo nos últimos 14 dias.','Desempenho',`<div class="kp"><div class="bx"><b>312</b><span>postagens</span></div><div class="bx"><b>1.480</b><span>cliques</span></div><div class="bx"><b>4,7</b><span>cliques/oferta</span></div><div class="bx"><b>2</b><span>grupos</span></div></div><div class="bx"><h5>Cliques por dia</h5><div class="bars">${[30,45,38,60,52,75,64,50,70,88,66,80,95,72].map((h,i)=>`<i class="${i>9?'h':''}" style="height:${h}%"></i>`).join('')}</div></div>`);
+const tabs=$('#tabs'),pn=$('#pn');
+F.forEach((f,i)=>{const b=document.createElement('button');b.role='tab';b.textContent=f[0];b.onclick=()=>sel(i);tabs.appendChild(b)});
+function sel(i){const f=F[i];$$('#tabs button').forEach((b,k)=>b.setAttribute('aria-selected',k===i));
+ pn.innerHTML=`<div class="sw"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${I[f[1]]}</svg></div><h3>${f[0]}</h3><p>${f[2]}</p><ul>${f[3].map(x=>`<li>${x}</li>`).join('')}</ul>${f[4]||''}</div>`}
+sel(0);
+/* planos */
+const P=[
+{n:'Grátis',p:'R$ 0',s:' por 10 dias',d:'Para conhecer o Linkfly',i:[['Grupos de origem','2'],['Grupos de destino','1'],['Tempo do robô por dia','3 horas'],['Envios por dia','50'],['Enviar agora','Dentro dos 50/dia'],['Busca Shopee','1 palavra, 2 h'],['Intervalo entre envios','1 min'],['Horários de pico',0],['Mensagem personalizada',0],['Sem anúncios do Linkfly',0],['Relatórios: resumo, CSV e Sub ID próprio',0]],m:'Testar grátis'},
+{n:'Plano Plus',old:'R$ 80,00',off:55,p:'R$ 35,90',s:' por mês',d:'Para começar com 1 ou 2 grupos. Cerca de R$ 1,20 por dia',rec:1,tag:'Mais vantajoso para iniciantes',i:[['Grupos de origem','5'],['Grupos de destino','2'],['Tempo do robô por dia','Dia todo'],['Envios por dia','150'],['Enviar agora','5 por dia'],['Busca Shopee','3 palavras, 1 h'],['Intervalo entre envios','30 s ou 1 min'],['Horários de pico','Sim'],['Mensagem personalizada','Sim'],['Sem anúncios do Linkfly',0],['Relatórios: resumo, CSV e Sub ID próprio',0]],m:'Quero o Plano Plus'},
+{n:'Plano Pro',old:'R$ 170,00',off:59,p:'R$ 69,90',s:' por mês',d:'Para quem tem vários grupos ou nichos e quer saber qual vende. Cerca de R$ 2,33 por dia',hl:1,tag:'Mais completo',trial:1,i:[['Grupos de origem','10'],['Grupos de destino','10'],['Tempo do robô por dia','Dia todo'],['Envios por dia','Ilimitados'],['Enviar agora','Ilimitado'],['Busca Shopee','10 palavras, 30 min'],['Intervalo entre envios','10 s, 30 s, 1 min'],['Horários de pico','Sim'],['Mensagem personalizada','Sim'],['Sem anúncios do Linkfly','Sim'],['Relatórios: resumo, CSV e Sub ID próprio','Sim']],m:'Testar 5 dias grátis'}];
+$('#pr').innerHTML=P.map(x=>`<div class="pc rv${x.hl?' hl':''}${x.rec?' rec':''}">${x.tag?`<span class="tag">${x.tag}</span>`:''}<h3>${x.n}</h3>${x.old?`<div class="old">De <s>${x.old}</s> por<b>-${x.off}%</b></div>`:''}<div class="pv">${x.p}<small>${x.s}</small></div><div class="dd">${x.d}</div>${x.trial?'<div class="p2t">🎁 Teste grátis por 5 dias<small>Todos os recursos do Plano Pro, sem cartão. Uma vez por conta.</small></div>':''}<ul>${x.i.map(r=>`<li class="${r[1]?'':'no'}"><span>${r[0]}</span><b>${r[1]||'Não'}</b></li>`).join('')}</ul><a class="btn ${x.hl?'b1':'b2'}" style="justify-content:center" ${x.n==='Grátis'||x.trial||x.rec?'data-app':''} target="_blank" rel="noopener" href="https://wa.me/5581973295943?text=${encodeURIComponent(x.trial?'Olá! Quero testar o Plano Pro do Linkfly por 5 dias grátis.':'Olá! Quero '+(x.n==='Grátis'?'o teste grátis do Linkfly':'o '+x.n+' do Linkfly')+'.')}">${x.m}</a></div>`).join('');
+/* reveal */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}}),{threshold:.18});
+$$('.rv,#fl').forEach((e,i)=>{if(e.classList.contains('rv'))e.style.transitionDelay=(i%4)*90+'ms';io.observe(e)});
+/* extras animados */
+const pg=$('#pg');addEventListener('scroll',()=>{pg.style.width=(scrollY/(document.documentElement.scrollHeight-innerHeight)*100)+'%'},{passive:true});
+$$('.pc,.sg div,.pl li,.pn,.cal').forEach(e=>{e.classList.add('sp');e.addEventListener('pointermove',ev=>{const r=e.getBoundingClientRect();e.style.setProperty('--mx',ev.clientX-r.left+'px');e.style.setProperty('--my',ev.clientY-r.top+'px')})});
+const io2=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;io2.unobserve(e.target);const tn=e.target.firstChild,v=parseFloat(tn.textContent.replace('R$','').replace(',','.'));if(!v||RM)return;const t0=performance.now();(function st(t){const p=Math.min((t-t0)/900,1),x=v*(1-Math.pow(1-p,3));tn.textContent='R$ '+x.toFixed(2).replace('.',',');if(p<1)requestAnimationFrame(st)})(t0)}),{threshold:.6});
+$$('.pc .pv').forEach(e=>io2.observe(e));
+let cI=0,auto=1;tabs.addEventListener('pointerdown',()=>auto=0);tabs.addEventListener('click',e=>{const k=[...tabs.children].indexOf(e.target);if(k>=0)cI=k});
+if(!RM)setInterval(()=>{if(!auto)return;const r=tabs.getBoundingClientRect();if(r.top>innerHeight||r.bottom<0)return;cI=(cI+1)%F.length;sel(cI);const b=tabs.children[cI];tabs.scrollTo({top:b.offsetTop-80,left:b.offsetLeft-20,behavior:'smooth'})},5500);
+</script>
+</body>
+</html>

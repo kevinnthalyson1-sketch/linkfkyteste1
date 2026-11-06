@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a1118">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("tema")==="light"?"light":"dark"}catch(e){}</script>
+<title>Linkfly – Painel do afiliado</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a1118;--sf:#121c27;--ink:#e9eef3;--mut:#8c9aa9;--ln:#1f2c3a;--ac:#2fd4a7;--ac2:#12302a;--ag:linear-gradient(135deg,#12b886,#0a8f9a);--wr:#f0b25a;--wb:#33280f;--bar:#1f5f4e;--sd:#0b141d;--sdi:#aab6c5;--sh:none;--nbr:#fff;--nbb:#3ee0b3;--ns:#6f7d8d;--nh:rgba(255,255,255,.06);--nht:#fff;--non:rgba(62,224,179,.14);--noc:#3ee0b3;--nbd:transparent;--nbm:rgba(255,255,255,.08);color-scheme:dark;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme="light"]{--bg:#f3f7f5;--sf:#fff;--ink:#0e2420;--mut:#5a6b66;--ln:#dce5e1;--ac:#09755b;--ac2:#e2f4ec;--wr:#8a4f00;--wb:#fff1d6;--bar:#a9dccb;--sd:#fff;--sdi:#4a5c57;--sh:0 1px 2px rgba(14,36,32,.05),0 8px 24px rgba(14,36,32,.07);--nbr:#0e2420;--nbb:#09755b;--ns:#7a8a85;--nh:rgba(9,117,91,.07);--nht:#0e2420;--non:#e2f4ec;--noc:#09755b;--nbd:#dce5e1;--nbm:#dce5e1;color-scheme:light}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Inter,system-ui,sans-serif;display:flex;min-height:100vh;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:'Bricolage Grotesque',Inter,sans-serif;margin:0;letter-spacing:-.02em}
+h1{font-size:28px;margin-bottom:4px}h3{font-size:17px;margin-bottom:12px}
+.sub{color:var(--mut);margin:0 0 22px}
+.ic{width:19px;height:19px;flex:none}
+.brand{display:flex;align-items:center;gap:10px;font:700 21px 'Bricolage Grotesque',sans-serif;color:var(--nbr);letter-spacing:-.02em}
+.brand b{color:var(--nbb);font-weight:700}
+.mk{width:34px;height:34px;border-radius:10px;background:var(--ag);display:grid;place-items:center;color:#fff;flex:none}.mk .ic{width:18px;height:18px}
+nav{width:240px;background:var(--sd);padding:20px 14px;display:flex;flex-direction:column;gap:2px;position:sticky;top:0;height:100vh;flex:none;overflow-y:auto;border-right:1px solid var(--nbd)}
+nav .brand{padding:4px 10px 18px}
+.ns{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ns);padding:16px 12px 6px;font-weight:600}
+nav a,nav .lnk{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;color:var(--sdi);text-decoration:none;font-weight:500;white-space:nowrap;transition:background .15s,color .15s}
+nav a:hover,nav .lnk:hover{background:var(--nh);color:var(--nht)}
+nav a.on{background:var(--non);color:var(--noc)}
+nav .lnk{margin-top:auto;width:100%;text-align:left}
+main{flex:1;padding:26px 32px 48px;max-width:1040px;min-width:0}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.mb{display:none;color:var(--ink)}.mb b{color:var(--ac)}
+button.pill{margin-left:0;display:inline-flex;gap:8px;align-items:center;padding:8px 14px;min-height:0;border-radius:999px;background:var(--sf);color:var(--ink);border:1px solid var(--ln);font-size:13px;box-shadow:var(--sh)}
+.pill::before{content:"";width:8px;height:8px;border-radius:50%;background:#9aa6b2}
+.pill.on::before{background:#12b886;box-shadow:0 0 0 4px rgba(18,184,134,.22)}
+section{display:none}section.on{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.box{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:20px;margin-bottom:16px;overflow-x:auto;box-shadow:var(--sh)}
+label{display:block;font-weight:600;margin-bottom:6px;font-size:14px}
+input[type=text],input[type=email],input[type=password],textarea,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--ln);border-radius:10px;padding:11px 13px;transition:border-color .15s,box-shadow .15s}
+input:focus,textarea:focus,select:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(15,157,122,.18)}
+textarea{min-height:130px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.hint{color:var(--mut);font-size:13px;margin:5px 0 0}
+button{font:inherit;font-weight:600;border:0;border-radius:10px;padding:11px 18px;cursor:pointer;background:var(--ag);color:#fff;min-height:42px;transition:transform .1s,filter .15s}
+button:hover{filter:brightness(1.07)}button:active{transform:translateY(1px)}
+button.sec{background:var(--ac2);color:var(--ac)}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.warn{background:var(--wb);color:var(--wr);border-radius:10px;padding:11px 14px;margin-top:10px;font-size:14px}
+.kp{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.kp .box{margin:0}.kc{position:relative;padding-left:24px}
+.kc::before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:4px;border-radius:0 4px 4px 0;background:var(--k,var(--ac))}
+.kp b{font:700 30px 'Bricolage Grotesque',sans-serif;display:block;letter-spacing:-.02em}.kp span{color:var(--mut);font-size:13px}
+.ob{background:linear-gradient(135deg,var(--ac2),var(--sf) 70%)}
+.prog{height:8px;background:var(--ln);border-radius:4px;overflow:hidden;margin-bottom:6px}.prog i{display:block;height:100%;background:var(--ag);border-radius:4px}
+.os{display:flex;align-items:center;gap:12px;padding:9px 0}.os button{padding:7px 14px;min-height:0;font-size:13px}
+.ck{width:22px;height:22px;border-radius:50%;border:2px solid var(--ln);display:grid;place-items:center;font-size:12px;flex:none;color:#fff}.ck.ok{background:var(--ac);border-color:var(--ac)}
+.bars{display:flex;align-items:flex-end;gap:3px;height:150px;padding-bottom:18px}
+.bc{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;position:relative;min-width:0}
+.b{width:100%;background:var(--bar);border-radius:4px 4px 0 0;min-height:1px}.b.hi{background:var(--ag)}
+.bc span{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:10px;color:var(--mut);white-space:nowrap}
+.hb{display:grid;grid-template-columns:140px 1fr 110px;gap:10px;align-items:center;margin:10px 0;font-size:14px}
+.hb i{display:block;height:10px;background:var(--ag);border-radius:5px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--ln)}
+th{color:var(--mut);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.gr{display:grid;grid-template-columns:1fr 90px 90px;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--ln);font-weight:400;margin:0}
+.gr span:first-child{overflow-wrap:anywhere}
+.msg{border-top:1px solid var(--ln);padding:12px 0;display:flex;gap:12px;justify-content:space-between;align-items:flex-start}
+.msg:first-child{border:0}.msg div{white-space:pre-wrap;overflow-wrap:anywhere;max-height:84px;overflow:hidden}.msg small{color:var(--mut)}
+.out{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--bg);border:1px solid var(--ln);border-radius:12px;padding:14px;margin-top:10px}
+.chk{display:flex;gap:8px;align-items:center;font-weight:400}
+.hg{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:12px 0}
+.hbtn{background:var(--bg);color:var(--mut);border:1px solid var(--ln);padding:9px 0;font-weight:500;min-height:0}
+.hbtn.on{background:var(--ag);color:#fff;border-color:transparent}
+.ins{margin:0;padding-left:20px}.ins li{margin:6px 0}
+.lg{position:relative;display:grid;place-items:center;border-radius:12px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;flex:none;overflow:hidden}
+.lg img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff}
+.st{display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--ln)}.st:first-child{padding-top:0}
+.sb{flex:1;min-width:0}
+.lnk{background:none;color:var(--ac);padding:4px 0;min-height:0;text-decoration:underline;font-weight:500}
+.warn .lnk{color:inherit}
+#login{margin:auto;max-width:400px;width:calc(100% - 32px);padding:32px;background:var(--sf);border:1px solid var(--ln);border-radius:20px;box-shadow:var(--sh)}
+.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:10px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:30;max-width:90vw;text-align:center}.toast.s{opacity:1}
+@media(max-width:760px){
+  body{flex-direction:column}
+  nav{position:fixed;left:0;right:0;bottom:0;top:auto;width:100%;height:auto;flex-direction:row;overflow-x:auto;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));gap:2px;z-index:20;border-right:0;border-top:1px solid var(--nbm)}
+  nav .brand,nav .ns{display:none}
+  nav a,nav .lnk{flex:0 0 78px;flex-direction:column;gap:3px;font-size:11px;line-height:1.15;padding:7px 4px;justify-content:center;align-items:center;text-align:center;white-space:normal;margin:0;width:78px}
+  .mb{display:flex}
+  main{padding:18px 16px 110px}
+  .row,.kp{grid-template-columns:1fr 1fr}
+  .hb{grid-template-columns:110px 1fr 84px}
+  .toast{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+}
+@media(max-width:480px){.row{grid-template-columns:1fr}.kp{grid-template-columns:1fr 1fr;gap:10px}.kp .box{padding:14px 14px 14px 20px}.kp b{font-size:26px}.hg{grid-template-columns:repeat(4,1fr)}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.bd{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;background:var(--ac2);color:var(--ac)}
+.bd.w{background:var(--wb);color:var(--wr)}.bd.r{background:rgba(220,38,38,.14);color:#dc2626}
+.tiny{padding:6px 12px;min-height:0;font-size:13px}
+.ck:not(.ok){color:var(--mut)}
+details.how summary{cursor:pointer;color:var(--ac);font-weight:600;font-size:13px;padding:2px 0}
+.how ol{margin:6px 0 4px;padding-left:20px;color:var(--mut);font-size:13.5px}.how li{margin:4px 0}
+.tip{background:var(--ac2);border-radius:10px;padding:11px 14px;font-size:14px;margin:0 0 14px}
+.ovl{position:fixed;inset:0;background:rgba(10,17,24,.6);display:grid;place-items:center;z-index:40;padding:16px;overflow-y:auto}
+.wel{background:var(--sf);border:1px solid var(--ln);border-radius:20px;max-width:480px;width:100%;padding:28px;box-shadow:var(--sh)}
+.wel ul{list-style:none;padding:0;margin:16px 0}.wel li{display:flex;gap:12px;margin:12px 0;align-items:flex-start}
+.wel .n{width:26px;height:26px;border-radius:50%;background:var(--ag);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700;flex:none}
+
+/* ---- tema claro/escuro e boas-vindas com nome ---- */
+.tr{margin-left:auto;display:flex;align-items:center;gap:10px;min-width:0}
+.tsw{display:inline-flex;background:var(--sf);border:1px solid var(--ln);border-radius:999px;padding:3px;gap:2px;box-shadow:var(--sh)}
+.tsw button{background:transparent;color:var(--mut);padding:6px 11px;min-height:0;border-radius:999px;font-size:13px;font-weight:500;display:inline-flex;gap:6px;align-items:center}
+.tsw button .ic{width:16px;height:16px}
+.tsw button:hover{filter:none;color:var(--ink)}
+.tsw button[aria-pressed=true],.tsw button[aria-pressed=true]:hover{background:var(--ac2);color:var(--ac);font-weight:600}
+#login{position:relative}.tsw.tl{position:absolute;top:16px;right:16px}
+.tch{display:flex;gap:10px;margin:14px 0 0}
+.tcd{flex:1;background:var(--bg);color:var(--ink);border:2px solid var(--ln);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:8px;align-items:center;font-size:14px}
+.tcd:hover{filter:none;border-color:var(--mut)}.tcd[aria-pressed=true]{border-color:var(--ac)}
+.tpv{width:100%;height:46px;border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:5px;border:1px solid rgba(128,128,128,.28)}
+.tpv i{display:block;height:6px;border-radius:3px}.tpv i:first-child{width:55%}.tpv i:last-child{width:82%}
+.tpv.d{background:#0a1118}.tpv.d i{background:#1f5f4e}.tpv.d i:first-child{background:#2fd4a7}
+.tpv.l{background:#f3f7f5}.tpv.l i{background:#a9dccb}.tpv.l i:first-child{background:#09755b}
+@media(max-width:760px){.tsw button span{display:none}.tsw button{padding:7px 10px}.tr{gap:8px}}
+@media(max-width:560px){.tsw button[aria-pressed=true]{display:none}.tsw{padding:2px}.tsw button{padding:8px 11px}}
+@media(max-width:400px){button.pill{padding:7px 10px;font-size:12.5px;gap:6px}.mb.brand{font-size:19px;gap:8px}.tr{gap:6px}}
+
+/* ---- Mariana: mascote, saúde do robô, resumo, fila e chat ---- */
+.mas{overflow:visible;flex:none;color:var(--ink)}
+.mas .bob{animation:mbob 3.4s ease-in-out infinite}
+@keyframes mbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.mas .sh{transform-box:fill-box;transform-origin:center;animation:msh 3.4s ease-in-out infinite}
+@keyframes msh{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.82)}}
+.mas .eye{transform-box:fill-box;transform-origin:center;animation:mblink 5s infinite}
+@keyframes mblink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+.mas .pl{transform-box:fill-box;transform-origin:50% 100%;animation:mrock 2.6s ease-in-out infinite}
+@keyframes mrock{0%,100%{transform:rotate(-9deg)}50%{transform:rotate(9deg)}}
+.mas .arm{transform-origin:66px 86px;animation:mwave 2.6s ease-in-out infinite}
+@keyframes mwave{0%,58%,100%{transform:rotate(0)}68%{transform:rotate(-24deg)}78%{transform:rotate(8deg)}88%{transform:rotate(-20deg)}}
+.mas .hl{animation:mhl 1.8s ease-in-out infinite}
+@keyframes mhl{50%{opacity:.3}}
+.mas .fly{opacity:0;animation:mfly 7s ease-in-out infinite}
+@keyframes mfly{0%{transform:translate(0,0);opacity:0}12%{opacity:.9}70%{opacity:.9}100%{transform:translate(92px,-66px);opacity:0}}
+.mas .zz{display:none}
+.mas.s-stop .zz{display:block;animation:mzz 2.6s ease-in infinite}
+@keyframes mzz{0%{transform:translate(0,6px);opacity:0}30%{opacity:1}100%{transform:translate(6px,-8px);opacity:0}}
+.mas .ec,.mas .mo{display:none}
+.mas.s-stop .ec{display:block}.mas.s-stop .eye{display:none}
+.mas.s-ok .mo-ok,.mas.s-warn .mo-warn,.mas.s-stop .mo-stop{display:block}
+.mas:not(.s-ok) .arm{animation:none}
+.mas.s-stop .pl{animation-duration:6s}.mas.s-stop .bob{animation-duration:5s}
+.mas.mini .fly,.mas.mini .zz{display:none}
+.sd{display:flex;gap:18px;align-items:center;position:relative;border-width:2px;padding-right:56px}
+.sd.ok{border-color:#12b886;background:linear-gradient(135deg,var(--ac2),var(--sf) 70%)}
+.sd.falta,.sd.atencao{border-color:#f0b25a;background:linear-gradient(135deg,var(--wb),var(--sf) 70%)}
+.sd.parado{border-color:#dc2626;background:linear-gradient(135deg,rgba(220,38,38,.1),var(--sf) 70%)}
+.sd>div{min-width:0}
+.sd small{color:var(--mut);font-weight:600}
+.sd h2{font-size:24px;margin:2px 0 4px}
+.sd p{margin:0}
+.sd-st{list-style:none;padding:0;margin:10px 0 12px;display:grid;gap:3px;font-size:14px}
+.sd-st li{display:flex;gap:8px;align-items:flex-start}.sd-st .no{color:var(--mut)}
+.sd-r{position:absolute;top:10px;right:10px;padding:6px 11px;min-height:0;background:transparent;color:var(--mut);border:1px solid var(--ln);font-size:16px;line-height:1}
+.rs{border-color:var(--ac);background:linear-gradient(135deg,var(--ac2),var(--sf) 80%);position:relative;padding-right:50px}
+.rs p{margin:4px 0}
+.rs code,.sbc{background:var(--bg);border:1px solid var(--ln);border-radius:6px;padding:1px 7px;font-weight:700;font-size:13px}
+.rs .x{position:absolute;top:8px;right:8px;background:transparent;color:var(--mut);min-height:0;padding:4px 11px;font-size:22px;line-height:1}
+.mr-wrap{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:25;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.mr-fab{position:relative;height:62px;border-radius:999px;padding:0 20px 0 6px;display:flex;align-items:center;gap:8px;background:var(--sf);color:var(--ink);border:2px solid var(--ac);box-shadow:0 6px 24px rgba(15,157,122,.35);min-height:0;white-space:nowrap}
+.mr-lb{font-size:14.5px;font-weight:500;color:var(--mut)}.mr-lb b{color:var(--ink);font-weight:700}
+.mr-fab:hover{filter:none;transform:translateY(-2px)}
+.mr-dot{position:absolute;top:1px;right:1px;width:15px;height:15px;border-radius:50%;background:#ef4444;border:2px solid var(--sf)}
+.mr-hi{background:var(--sf);color:var(--ink);border:1px solid var(--ln);border-radius:14px 14px 4px 14px;padding:8px 13px;font-size:13.5px;font-weight:600;box-shadow:var(--sh),0 4px 16px rgba(0,0,0,.12);animation:mpop .3s ease}
+.mr-pan{position:fixed;right:18px;bottom:calc(98px + env(safe-area-inset-bottom,0px));width:360px;max-width:calc(100vw - 24px);height:min(540px,calc(100vh - 130px));height:min(540px,calc(100dvh - 130px));background:var(--sf);border:1px solid var(--ln);border-radius:20px;box-shadow:0 18px 50px rgba(0,0,0,.3);display:flex;flex-direction:column;z-index:35;overflow:hidden;animation:mpop .2s ease}
+@keyframes mpop{from{opacity:0;transform:translateY(10px) scale(.97)}}
+.mr-hd{display:flex;gap:10px;align-items:center;padding:8px 14px;background:var(--ag);color:#fff}
+.mr-hd .mas{color:#fff;background:rgba(255,255,255,.18);border-radius:50%;padding:3px}
+.mr-hd b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-size:17px;line-height:1.2}
+.mr-hd small{display:block;opacity:.9;font-size:12px}
+.mr-x{margin-left:auto;background:rgba(255,255,255,.2);color:#fff;border-radius:50%;width:34px;height:34px;min-height:0;padding:0;font-size:20px;line-height:1}
+.mr-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;overscroll-behavior:contain}
+.mr-b{max-width:88%;padding:10px 13px;border-radius:16px;font-size:14px;line-height:1.5;overflow-wrap:anywhere}
+.mr-b.bot{background:var(--bg);border:1px solid var(--ln);border-bottom-left-radius:4px;align-self:flex-start}
+.mr-b.me{background:var(--ag);color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
+.mr-b ol,.mr-b ul{margin:6px 0;padding-left:18px}.mr-b li{margin:2px 0}
+.mr-b .acts{margin-top:8px}
+.mr-ty{display:inline-flex;gap:4px;padding:3px 0}
+.mr-ty i{width:7px;height:7px;border-radius:50%;background:var(--mut);animation:mty 1s infinite}
+.mr-ty i:nth-child(2){animation-delay:.15s}.mr-ty i:nth-child(3){animation-delay:.3s}
+@keyframes mty{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-4px);opacity:1}}
+.mr-chips{display:flex;flex-wrap:wrap;gap:6px;padding:2px 14px 10px;max-height:96px;overflow-y:auto;flex:none}
+.mr-chips button{flex:none;font-size:12.5px;padding:7px 12px;min-height:0;border-radius:999px;background:var(--ac2);color:var(--ac);white-space:nowrap}
+.mr-in{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--ln)}
+.mr-in input{flex:1;font-size:16px}
+.mr-in button{min-width:46px;padding:0 14px}
+.qk{grid-template-columns:repeat(4,1fr)}
+.qi{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--ln)}.qi:first-child{border:0;padding-top:0}
+.qn{width:26px;height:26px;border-radius:50%;background:var(--ac2);color:var(--ac);display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.qt{margin-top:4px;overflow-wrap:anywhere;font-size:14px}
+@media(max-width:760px){
+  .mr-wrap{bottom:calc(84px + env(safe-area-inset-bottom,0px));right:12px}
+  .mr-pan{right:8px;left:8px;width:auto;max-width:none;bottom:calc(76px + env(safe-area-inset-bottom,0px));height:calc(100vh - 150px);height:calc(100dvh - 150px - env(safe-area-inset-bottom,0px))}
+  body.mr-open .mr-wrap{display:none}
+  .qk{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){.sd{flex-direction:column;align-items:flex-start;gap:6px}.sd h2{font-size:21px}}
+.cp{background:var(--ac2);color:var(--ac);padding:2px 10px;border-radius:8px;font-family:monospace;font-size:15px}
+#campBox{border:2px solid var(--ac)}#campBox h3{margin-top:0}#campBox textarea{margin:10px 0 0;min-height:70px}#campBox .acts a{text-decoration:none}
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0 16px}
+.pc{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:20px;box-shadow:var(--sh);display:flex;flex-direction:column;position:relative}
+.pc .tag{position:absolute;top:-12px;left:18px;background:var(--ag);color:#fff;font-size:12px;font-weight:700;padding:3px 11px;border-radius:99px;max-width:calc(100% - 36px);line-height:1.35}
+.pc.rec{border:2px solid var(--ac)}
+.pc .p2t{background:var(--ac2);color:var(--ac);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;margin-bottom:10px}
+.pc .btns{display:flex;flex-direction:column;gap:8px}.pc .btns a{display:block;text-decoration:none}.pc .btns button{width:100%}
+.pc.cur{border:2px solid var(--ac)}.pc h3{margin:0 0 4px}
+.pc .pr{font:700 30px 'Bricolage Grotesque',sans-serif;letter-spacing:-.02em;margin:4px 0 2px}.pc .pr small{font:500 14px sans-serif;color:var(--mut)}
+.pc ul{list-style:none;padding:0;margin:14px 0 18px;flex:1}.pc li{padding:6px 0 6px 24px;position:relative;font-size:14px;border-top:1px solid var(--ln)}
+.pc li::before{content:"✓";position:absolute;left:2px;color:var(--ac);font-weight:700}.pc li.no{color:var(--mut)}.pc li.no::before{content:"–";color:var(--mut)}
+@media(max-width:860px){.pg{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="login" hidden>
+  <div class="tsw tl" role="group" aria-label="Aparência do painel"><button type="button" data-t="dark" aria-pressed="true" aria-label="Tema escuro"><i data-i="moon"></i><span>Escuro</span></button><button type="button" data-t="light" aria-pressed="false" aria-label="Tema claro"><i data-i="sun"></i><span>Claro</span></button></div>
+  <div class="brand" style="color:var(--ink);padding:0 0 18px"><span class="mk"><i data-i="send"></i></span><span>Link<b style="color:var(--ac)">fly</b></span></div>
+  <h1 id="lgT">Entrar</h1><p class="sub" id="lgS"></p>
+  <form onsubmit="return lgGo(event)">
+    <div id="f_nm" style="margin-bottom:12px"><label for="lgNm">Seu nome</label><input type="text" id="lgNm" autocomplete="given-name" maxlength="40" placeholder="Como podemos te chamar?"></div>
+    <div id="f_em" style="margin-bottom:12px"><label for="lgEm">E-mail</label><input type="email" id="lgEm" autocomplete="email"></div>
+    <div id="f_pw" style="margin-bottom:12px"><label for="lgPw" id="pwLbl">Senha</label><input type="password" id="lgPw"></div>
+    <div id="f_pw2" style="margin-bottom:12px"><label for="lgPw2">Repita a senha</label><input type="password" id="lgPw2" autocomplete="new-password"></div>
+    <div id="f_cv" style="margin-bottom:12px"><label for="lgCv">Código de convite (se tiver)</label><input type="text" id="lgCv"></div>
+    <div id="f_ac" style="margin-bottom:12px"><label class="chk" style="font-size:14px"><input type="checkbox" id="lgAc"><span>Li e aceito os <a href="termos.html" target="_blank" rel="noopener">Termos de uso</a> e a <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a></span></label></div>
+    <div class="acts"><button type="submit" id="lgB">Entrar</button></div>
+  </form>
+  <div class="acts" id="lgLinks" style="margin-top:16px"></div>
+  <div class="acts"><button type="button" class="lnk" id="backDemo" hidden onclick="boot()">Voltar à demonstração</button></div>
+</div>
+
+<nav id="nav" hidden>
+  <div class="brand"><span class="mk"><i data-i="send"></i></span><span>Link<b>fly</b></span></div>
+  <div class="ns">Painel</div>
+  <a href="#desempenho" class="on"><i data-i="chart"></i>Desempenho</a>
+  <a href="#enviar"><i data-i="send"></i>Enviar agora</a>
+  <a href="#fila"><i data-i="queue"></i>Fila de envio</a>
+  <a href="#historico"><i data-i="list"></i>Histórico</a>
+  <div class="ns">Configuração</div>
+  <a href="#conexao"><i data-i="users"></i>WhatsApp e grupos</a>
+  <a href="#lojas"><i data-i="bag"></i>Lojas</a>
+  <a href="#mensagens"><i data-i="msg"></i>Mensagens</a>
+  <a href="#horarios"><i data-i="clock"></i>Horários</a>
+  <a href="#auto"><i data-i="zap"></i>Automação</a>
+  <div class="ns">Conta</div>
+  <a href="#planos"><i data-i="shield"></i>Planos</a>
+  <div class="ns" id="admNs" hidden>Administração</div>
+  <a href="#admin" id="admA" hidden><i data-i="shield"></i>Clientes</a>
+  <button type="button" class="lnk" onclick="logout()"><i data-i="out"></i>Sair</button>
+</nav>
+<main id="main" hidden>
+<div class="top"><div class="mb brand"><span class="mk"><i data-i="send"></i></span><span>Link<b>fly</b></span></div><div class="tr"><div class="tsw" role="group" aria-label="Aparência do painel"><button type="button" data-t="dark" aria-pressed="true" aria-label="Tema escuro"><i data-i="moon"></i><span>Escuro</span></button><button type="button" data-t="light" aria-pressed="false" aria-label="Tema claro"><i data-i="sun"></i><span>Claro</span></button></div><button type="button" class="pill" id="pill" onclick="toggleActive()">Robô pausado</button></div></div>
+<div class="warn" id="subBar" hidden style="margin:0 0 16px"></div>
+<div class="box" id="campBox" hidden></div>
+<div class="warn" id="demo" hidden style="margin:0 0 16px">Modo demonstração: os dados abaixo são de exemplo. Publicado no seu servidor, o painel mostra os dados reais. <button type="button" class="lnk" onclick="showLogin()">Ver tela de entrada</button></div>
+
+<section id="desempenho" class="on">
+  <h1>Desempenho</h1><p class="sub">Como suas ofertas estão rendendo nos últimos 14 dias.</p>
+  <div id="stBody"></div>
+</section>
+
+<section id="conexao">
+  <h1>WhatsApp e grupos</h1><p class="sub">Conecte seu número, escolha de quais grupos copiar e em quais postar.</p>
+  <div class="box"><h3>1. Conectar o WhatsApp</h3>
+    <div class="tip"><b>Use um chip dedicado.</b> Evite o seu número pessoal: o WhatsApp pode bloquear números que usam automação.</div>
+    <details class="how" style="margin:0 0 12px"><summary>Como conectar</summary><ol><li>Clique em <b>Gerar QR code</b> abaixo.</li><li>No celular, abra o WhatsApp e vá em <b>Aparelhos conectados</b>.</li><li>Toque em <b>Conectar um aparelho</b> e aponte a câmera para o QR code.</li><li>Quando aparecer “WhatsApp conectado”, clique em <b>Carregar meus grupos</b> no passo 2.</li></ol><p class="hint" style="margin:6px 0 0">O QR code expira em cerca de 1 minuto. Se expirar, gere outro.</p></details>
+    <p id="stt" class="sub" style="margin:0 0 10px">Verificando conexão…</p>
+    <div id="qr"></div>
+    <div class="acts"><button onclick="getQr()">Gerar QR code</button><button class="sec" onclick="checkStatus()">Atualizar status</button></div>
+    <p class="hint">No celular: WhatsApp, Aparelhos conectados, Conectar um aparelho.</p></div>
+  <div class="box"><h3>2. Escolher grupos</h3>
+    <p class="hint" style="margin:0 0 10px">Copiar: o robô lê as ofertas desse grupo (até 10). Postar: o robô envia as ofertas para esse grupo. Você pode marcar vários grupos para postar: cada oferta vai para todos eles, um de cada vez, respeitando o intervalo.</p>
+    <div id="grp"><p class="hint">Clique em “Carregar meus grupos”.</p></div>
+    <div class="acts"><button class="sec" onclick="loadGroups()">Carregar meus grupos</button><button onclick="saveGroups()">Salvar grupos</button></div></div>
+</section>
+
+<section id="lojas">
+  <h1>Lojas</h1><p class="sub">Seus IDs de afiliado. O robô só converte links das lojas preenchidas.</p>
+  <div class="box" style="padding:14px 20px"><details class="how"><summary>Onde encontro cada ID?</summary><ol>
+    <li><b>Amazon:</b> no painel do Programa de Associados Amazon, copie o seu ID de rastreamento (parece com <i>seunome-20</i>).</li>
+    <li><b>Mercado Livre:</b> gere um link no seu painel de afiliados e copie o valor que aparece depois de <i>matt_tool=</i>.</li>
+    <li><b>Magazine Luiza:</b> no endereço da sua loja no Magazine Você (magazinevoce.com.br/magazine<i>nomedasualoja</i>), use só a parte depois de “magazine”.</li>
+    <li><b>Shopee:</b> na Central de Afiliados, abra a seção Open API para ver o App ID e o Secret. Exige conta de afiliado aprovada.</li>
+    <li><b>AliExpress e Shein:</b> gere um link no portal de afiliados da loja, cole aqui e troque o endereço do produto por <i>{url_enc}</i>.</li>
+  </ol><p class="hint" style="margin:6px 0 0">Comece por uma loja só. Depois do teste, cadastre as outras.</p></details></div>
+  <div class="box">
+    <div class="st"><span class="lgp" data-k="amazon"></span><div class="sb"><label for="iAmz">Amazon</label><input type="text" id="iAmz" placeholder="seunome-20"><p class="hint">Tag do Associados Amazon.</p></div></div>
+    <div class="st"><span class="lgp" data-k="ml"></span><div class="sb"><label for="iMl">Mercado Livre</label><input type="text" id="iMl" placeholder="seu_id"><p class="hint">ID do programa de afiliados.</p></div></div>
+    <div class="st"><span class="lgp" data-k="magalu"></span><div class="sb"><label for="iMg">Magazine Luiza</label><input type="text" id="iMg" placeholder="nomedasualoja"><p class="hint">Nome da sua loja no Magazine Você.</p></div></div>
+    <div class="st"><span class="lgp" data-k="shopee"></span><div class="sb"><label for="shId">Shopee</label>
+      <div class="row" style="margin:0"><input type="text" id="shId" placeholder="App ID"><input type="password" id="shSc" placeholder="App Secret" aria-label="Shopee App Secret"></div>
+      <p class="hint">Painel de afiliados Shopee, seção Open API. O Secret fica só no servidor.</p></div></div>
+    <div class="st"><span class="lgp" data-k="aliexpress"></span><div class="sb"><label for="tAli">AliExpress</label><input type="text" id="tAli" placeholder="https://s.click.aliexpress.com/deep_link.htm?...&dl_target_url={url_enc}"><p class="hint">Modelo do seu link, copiado do gerador de links. {url_enc} vira o endereço do produto.</p></div></div>
+    <div class="st"><span class="lgp" data-k="shein"></span><div class="sb"><label for="tShe">Shein</label><input type="text" id="tShe" placeholder="Link de rastreio da sua rede, com {url_enc}"><p class="hint">Mesmo formato do AliExpress.</p></div></div>
+    <div class="st" id="subBox" style="display:block"><label>Sub ID por grupo (Shopee)</label>
+      <p class="hint" style="margin:0 0 10px">Cada grupo onde você posta ganha um código próprio, que o robô coloca dentro do link da Shopee. No relatório de vendas da Shopee, a coluna <b>Sub ID</b> mostra qual grupo vendeu, mesmo sem contagem de cliques. Letras e números, de 3 a 20 caracteres. Links já enviados continuam com o código antigo.</p>
+      <div id="subList"></div><div class="acts" style="margin-top:8px"><button type="button" class="sec" onclick="saveSubs()">Salvar Sub IDs</button></div></div>
+    <div style="margin-top:16px"><label class="chk"><input type="checkbox" id="rast"> Rastrear cliques (os links passam pelo seu servidor para contar os cliques)</label></div>
+    <div class="acts"><button onclick="saveLojas()">Salvar lojas</button></div>
+  </div>
+</section>
+
+<section id="auto">
+  <h1>Automação</h1><p class="sub">O robô copia dos grupos de origem e também procura ofertas sozinho.</p>
+  <div class="box"><h3>O que o robô está fazendo</h3>
+    <div id="dgSt"></div>
+    <div id="dgList" style="margin-top:10px"></div>
+    <div class="acts"><button class="sec" onclick="loadDiag()">Atualizar</button><button class="sec" onclick="resetWebhook()">Reconfigurar recebimento</button></div>
+    <p class="hint">Se o robô não enviar nada, esta lista diz o motivo de cada mensagem ignorada.</p></div>
+  <div class="box"><h3>Copiar dos grupos</h3>
+    <label for="dly">Intervalo entre postagens</label>
+    <select id="dly" onchange="dlyW()"><option value="10">10 segundos</option><option value="30">30 segundos</option><option value="60">1 minuto</option></select>
+    <div class="warn" id="dlyWn"></div>
+    <div class="acts"><button onclick="saveDelay()">Salvar intervalo</button><button class="sec" id="actBtn" onclick="toggleActive()">Ativar robô</button></div></div>
+  <div class="box"><h3>Ofertas automáticas (Shopee)</h3>
+    <div class="row"><div><label for="ofEv">Buscar novas ofertas</label><select id="ofEv"><option value="30">a cada 30 minutos</option><option value="60">a cada 1 hora</option><option value="120">a cada 2 horas</option><option value="240">a cada 4 horas</option></select></div>
+    <div><label for="ofMx">Ofertas por rodada</label><select id="ofMx"><option value="1">1 oferta</option><option value="3">3 ofertas</option><option value="5">5 ofertas</option></select></div></div>
+    <div class="row"><div><label for="ofDs">Desconto mínimo</label><select id="ofDs"><option value="20">20%</option><option value="30">30%</option><option value="50">50%</option></select></div>
+    <div><label for="ofKw">Palavras-chave (opcional)</label><input type="text" id="ofKw" placeholder="fone, air fryer"></div></div>
+    <div class="row"><div><label for="ofPmin">Preço mínimo (R$, opcional)</label><input type="text" inputmode="decimal" id="ofPmin" placeholder="0"></div>
+    <div><label for="ofPmax">Preço máximo (R$, opcional)</label><input type="text" inputmode="decimal" id="ofPmax" placeholder="sem limite"></div></div>
+    <p class="hint">Exige conta de afiliado Shopee aprovada, preenchida em Lojas.</p>
+    <div class="acts"><button onclick="saveOfe(null)">Salvar</button><button class="sec" id="ofBtn" onclick="saveOfe('toggle')">Ativar busca de ofertas</button></div></div>
+  <div class="box"><h3>Proteção do número</h3>
+    <p class="sub" style="margin:0 0 14px">Reduz o risco de o WhatsApp bloquear o seu número. Não elimina o risco.</p>
+    <label for="pLim">Máximo de postagens por dia</label>
+    <select id="pLim"><option value="50">50</option><option value="100">100</option><option value="150" selected>150</option><option value="250">250</option><option value="400">400</option><option value="100000">Ilimitado</option></select>
+    <div style="margin-top:12px"><label class="chk"><input type="checkbox" id="pAq"> Aquecimento: número novo começa com poucas postagens e aumenta a cada dia</label></div>
+    <div style="margin-top:8px"><label class="chk"><input type="checkbox" id="pVar"> Variar o intervalo entre postagens (mais natural)</label></div>
+    <div class="acts"><button onclick="saveProt()">Salvar proteção</button></div></div>
+</section>
+
+<section id="mensagens">
+  <h1>Mensagens</h1><p class="sub">Monte o visual das ofertas que o robô posta no seu grupo.</p>
+  <div class="row" style="align-items:start">
+    <div class="box" style="margin:0"><h3>Seu modelo</h3>
+      <label for="mdl">Estilo</label>
+      <select id="mdl" onchange="mdlChg()"><option value="classico">Clássico</option><option value="minimal">Minimalista</option><option value="urgencia">Urgência</option><option value="custom">Personalizado</option></select>
+      <div id="cstWrap" hidden style="margin-top:12px"><label for="cst">Seu texto</label><textarea id="cst" oninput="prev()"></textarea>
+        <p class="hint">Campos: {titulo} {preco} {de} {desconto} {avaliacao} {vendidos} {cupom} {link}. A linha some sozinha quando todos os campos dela estão vazios (ex.: a linha do cupom).</p></div>
+      <div style="margin-top:12px"><label for="mTop">Texto no início (opcional)</label><input type="text" id="mTop" oninput="prev()" placeholder="Ex.: 🔔 OFERTA DO DIA"></div>
+      <div style="margin-top:12px"><label for="mRod">Texto no final (opcional)</label><input type="text" id="mRod" oninput="prev()" placeholder="Ex.: Entre no grupo: https://chat.whatsapp.com/..."></div>
+      <div style="margin-top:12px"><label for="mCup">Cupom (opcional)</label><input type="text" id="mCup" oninput="prev()" placeholder="Ex.: BLACK10"></div>
+      <div style="margin-top:12px"><label class="chk"><input type="checkbox" id="mLimp"> Tirar convites de outros grupos das mensagens copiadas</label></div>
+      <div style="margin-top:12px"><label class="chk"><input type="checkbox" id="mFoto"> Buscar a foto do produto quando a mensagem copiada vier sem imagem</label></div>
+      <div style="margin-top:12px"><label for="mBlq">Não copiar mensagens com estas palavras</label><input type="text" id="mBlq" placeholder="sorteio, divulgue"></div>
+      <div class="acts"><button onclick="saveMsg()">Salvar mensagem</button></div></div>
+    <div class="box" style="margin:0"><h3>Prévia</h3><div class="out" id="mPrev" style="margin:0"></div>
+      <p class="hint">Exemplo com um produto fictício. As ofertas do robô saem com a foto do produto e esta mensagem como legenda. Nas copiadas, só o início e o final são acrescentados.</p></div>
+  </div>
+</section>
+
+<section id="horarios">
+  <h1>Horários de pico</h1><p class="sub">Escolha em quais horas o robô pode postar. Fora delas, as ofertas esperam na fila.</p>
+  <div class="warn" id="hrLock" hidden>Horários de pico estão disponíveis a partir do Plano Plus. <a href="#planos">Ver planos</a></div>
+  <div class="box"><label class="chk"><input type="checkbox" id="hrOn"> Postar só nos horários escolhidos</label>
+    <div class="row" style="margin:14px 0 0;align-items:end">
+      <div><label for="hrDe">Das</label><select id="hrDe"></select></div>
+      <div><label for="hrAte">Às</label><select id="hrAte"></select></div>
+    </div>
+    <div class="acts"><button class="sec" onclick="applyRange()">Aplicar faixa</button></div>
+    <p class="hint">Ex.: das 6h às 22h posta de 6:00 até 21:59. Depois você pode ajustar hora a hora abaixo.</p>
+    <div class="hg" id="hrGrid"></div><p class="hint" id="hrInfo"></p>
+    <div class="acts"><button class="sec" onclick="preset('comercial')">Horário comercial</button><button class="sec" onclick="preset('pico')">Almoço e noite</button><button class="sec" onclick="bestHours()">Sugerir horários de pico</button></div>
+    <p class="hint">A sugestão usa os horários em que as suas ofertas mais receberam cliques. Sem cliques ainda, usa os horários típicos de compras online: manhã, almoço e noite.</p>
+    <div class="acts"><button onclick="saveHr()">Salvar horários</button></div></div>
+</section>
+
+<section id="planos">
+  <h1>Planos</h1><p class="sub">Comece grátis por 10 dias, teste o Plano Pro por 5 dias e troque de plano quando quiser.</p>
+  <div id="plBody"></div>
+</section>
+
+<section id="admin">
+  <h1>Clientes</h1><p class="sub">Quem usa o Linkfly, a situação de cada conta e o que fazer com ela.</p>
+  <div class="kp" id="admKp"></div>
+  <div class="box"><h3>O que os clientes acharam do teste</h3><div id="admFb"><p class="hint">Carregando…</p></div></div>
+  <div class="box"><div id="admTb"></div>
+    <p class="hint">“+10 dias” prolonga o teste ou a assinatura; “+30 dias” renova um mês (use quando o pagamento cair fora do automático). O seletor muda o plano do cliente. Bloquear pausa o robô e derruba as sessões na hora.</p></div>
+</section>
+
+<section id="enviar">
+  <h1>Enviar agora</h1><p class="sub">Copie uma oferta recente de um grupo ou cole uma, e envie na hora com seus links.</p>
+  <div class="box"><h3>Ofertas recentes dos grupos de origem</h3><div id="inbox"><p class="hint">Carregando…</p></div></div>
+  <div class="box"><label for="nowTxt">Oferta</label><textarea id="nowTxt" placeholder="Cole só o link do produto (o Linkfly monta a mensagem no seu modelo, com título, preço e foto) ou uma oferta pronta"></textarea>
+    <div style="margin-top:12px"><label>Enviar para</label><div id="nowTo"></div></div>
+    <div id="nowOut"></div>
+    <div class="acts"><button class="sec" onclick="preview()">Ver prévia</button><button onclick="sendNow()">Enviar agora</button></div></div>
+</section>
+
+<section id="fila">
+  <h1>Fila de envio</h1><p class="sub">O que está esperando para ser postado e por quê.</p>
+  <div id="filaBody"><p class="hint">Carregando…</p></div>
+</section>
+
+<section id="historico">
+  <h1>Histórico</h1><p class="sub">Ofertas enviadas pelo robô e por você.</p>
+  <div class="acts" style="margin:0 0 12px"><button class="sec" onclick="exportCsv()">Exportar planilha (CSV)</button></div>
+  <div class="box" id="hist"></div>
+</section>
+</main>
+<div class="ovl" id="wel" hidden role="dialog" aria-modal="true" aria-labelledby="welT"><div class="wel">
+  <div class="brand" style="color:var(--ink);padding:0 0 14px"><span class="mk"><i data-i="send"></i></span><span>Link<b style="color:var(--ac)">fly</b></span></div>
+  <h1 id="welT">Olá! 👋</h1><p class="sub" style="margin:4px 0 0">Boas-vindas ao Linkfly. Em poucos minutos o robô começa a trabalhar para você.</p>
+  <div id="welNm" hidden style="margin-top:16px"><label for="welIn">Como posso te chamar?</label><input type="text" id="welIn" maxlength="40" autocomplete="given-name" placeholder="Seu nome" oninput="welGreet()" onkeydown="if(event.key==='Enter')welClose(true)"></div>
+  <ul>
+    <li><span class="n">1</span><span><b>Copia as ofertas</b> dos grupos que você escolher e troca os links pelos seus links de afiliado.</span></li>
+    <li><span class="n">2</span><span><b>Posta nos seus grupos</b>, com foto, no ritmo e nos horários que você definir.</span></li>
+    <li><span class="n">3</span><span><b>Mostra o que rende</b>: cliques por loja, grupo e horário, na tela Desempenho.</span></li>
+  </ul>
+  <div class="tip" style="background:var(--wb);color:var(--wr)"><b>Antes de conectar:</b> use um chip de WhatsApp dedicado. O WhatsApp pode bloquear números que usam automação, e nenhuma configuração elimina esse risco.</div>
+  <div style="font-weight:600;font-size:14px;margin-top:16px">Escolha a aparência do painel</div>
+  <div class="tch" role="group" aria-label="Aparência do painel"><button type="button" class="tcd" data-t="dark" aria-pressed="true"><span class="tpv d"><i></i><i></i></span>Escuro</button><button type="button" class="tcd" data-t="light" aria-pressed="false"><span class="tpv l"><i></i><i></i></span>Claro</button></div>
+  <p class="hint">Você pode trocar quando quiser, no topo da tela.</p>
+  <div class="acts" style="margin-top:18px"><button id="welB" onclick="welClose(true)">Começar</button><button class="sec" onclick="welClose(false)">Agora não</button></div>
+</div></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><linearGradient id="lfg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="100"><stop offset="0" stop-color="#12b886"/><stop offset="1" stop-color="#0a8f9a"/></linearGradient></defs></svg>
+<div class="mr-wrap" id="mrWrap" hidden><span class="mr-hi" id="mrHi" hidden>Dúvidas? Fale comigo!</span>
+  <button type="button" class="mr-fab" id="mrBtn" onclick="mrToggle()" aria-label="Falar com a Mariana, assistente do Linkfly" aria-expanded="false"><span id="mrFab"></span><span class="mr-lb"><b>Mariana</b> – ajuda</span><span class="mr-dot" id="mrDot"></span></button></div>
+<div class="mr-pan" id="mrPan" hidden role="dialog" aria-label="Mariana, assistente do Linkfly">
+  <div class="mr-hd"><span id="mrAv"></span><div><b>Mariana</b><small>Assistente virtual do Linkfly</small></div><button type="button" class="mr-x" onclick="mrToggle()" aria-label="Fechar conversa">×</button></div>
+  <div class="mr-msgs" id="mrMsgs" aria-live="polite"></div>
+  <div class="mr-chips" id="mrChips"></div>
+  <form class="mr-in" onsubmit="return mrSend(event)"><input type="text" id="mrIn" placeholder="Digite sua dúvida…" autocomplete="off" aria-label="Sua dúvida para a Mariana"><button type="submit" aria-label="Enviar">➤</button></form>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const LJ={amazon:'Amazon',ml:'Mercado Livre',magalu:'Magazine Luiza',shopee:'Shopee',aliexpress:'AliExpress',shein:'Shein'};
+const LG={amazon:['#FF9900','#111','a'],ml:['#FFE600','#2D3277','ML'],magalu:['#0086FF','#fff','M'],shopee:['#EE4D2D','#fff','S'],aliexpress:['#E62E04','#fff','Ali'],shein:['#111','#fff','SH']};
+const lg=(k,z=44)=>{const c=LG[k]||['#888','#fff','?'];return `<span class="lg" style="width:${z}px;height:${z}px;background:${c[0]};color:${c[1]};font-size:${Math.round(z*.36)}px"><img src="logos/${k}.png" alt="" onerror="this.remove()">${c[2]}</span>`};
+const TIPO={'cópia':'Cópia de grupo',oferta:'Oferta do robô',manual:'Envio manual'};
+const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let TOKEN='',DEMO=false,CFG={},GROUPS=[],PICK=null;
+const PL_DEMO={teste:{anuncio:true,nome:'Plano grátis (teste de 10 dias)',preco:0,origens:2,destinos:1,enviosDia:50,delays:[60],ofertas:{keywords:1,max:1,everyMin:120},horarios:false,modeloCustom:false,relatorios:false,horasDia:3},plano1:{anuncio:true,nome:'Plano Plus',preco:35.9,origens:5,destinos:2,enviosDia:150,delays:[30,60],ofertas:{keywords:3,max:3,everyMin:60},horarios:true,modeloCustom:true,relatorios:false,agoraDia:5},plano2:{anuncio:false,nome:'Plano Pro',preco:69.9,origens:10,destinos:10,enviosDia:100000,delays:[10,30,60],ofertas:{keywords:10,max:5,everyMin:30},horarios:true,modeloCustom:true,relatorios:true}};
+const PNOME={teste:'Grátis (teste)',plano1:'Plano Plus',plano2:'Plano Pro'};
+const rest=ms=>{const h=Math.ceil(Math.max(ms,0)/36e5);return h>=48?`${Math.ceil(h/24)} dias`:h>=2?`${h} horas`:'menos de 1 hora'};
+const lim=n=>n>=100000?'∞':n;
+const brl=v=>Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const fmMin=m=>m>=60?`${m/60} h`:`${m} min`;
+function tema(t,save){t=t==='light'?'light':'dark';document.documentElement.dataset.theme=t;ls.set('tema',t);
+  const m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='light'?'#f3f7f5':'#0a1118';
+  document.querySelectorAll('[data-t]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.t===t)));
+  if(save&&!DEMO&&TOKEN)api('/config','PUT',{tema:t}).catch(()=>{})}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(b)tema(b.dataset.t,true)});
+tema(ls.get('tema'));
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('s');setTimeout(()=>e.classList.remove('s'),Math.min(9000,2200+t.length*45))}
+const nm=id=>(CFG.names&&CFG.names[id])||id;
+
+async function api(p,method='GET',body){
+  if(DEMO)return demo(p,method,body);
+  const r=await fetch('/api'+p,{method,headers:{'Content-Type':'application/json','x-token':TOKEN},body:body&&JSON.stringify(body)});
+  const j=await r.json();
+  if(r.status===401){showLogin();throw new Error(j.erro)}
+  if(!r.ok)throw new Error(j.erro||'Erro inesperado');return j}
+const run=async(f)=>{try{await f()}catch(e){toast(e.message)}};
+
+async function boot(){
+  TOKEN=ls.get('tk')||'';
+  try{
+    if(location.protocol==='file:')throw 0;
+    const r=await fetch('/api/me',{headers:{'x-token':TOKEN}});
+    if(!(r.headers.get('content-type')||'').includes('json'))throw 0;
+    if(r.status===401){showLogin();return}
+    CFG=await r.json();
+  }catch(e){DEMO=true;CFG=demoCfg();$('demo').hidden=false}
+  if(DEMO)Object.assign(CFG,{testeP2:CFG.testeP2||{ativo:false,usado:false,disponivel:CFG.plano!=='plano2'&&!CFG.admin,dias:5},planos:PL_DEMO,planoInfo:PL_DEMO[CFG.plano],campanha:NOVO?null:{dia:8,valor:{posts:48,links:52,cliques:73,horas:2.4,horasMes:9,minPorPost:3},feedback:true,bonus:/bonus/i.test(location.search)?{codigo:'PRO10',pct:10,ate:Date.now()+20*36e5,link:'#'}:null,restamMs:/bonus/i.test(location.search)?5*36e5:2*864e5}});
+  if(CFG.tema)tema(CFG.tema);$('login').hidden=true;$('nav').hidden=false;$('main').hidden=false;fill();route();welcome();mrShow(true)}
+const LV={in:{t:'Entrar',s:'Acesse o seu painel.',f:['em','pw'],b:'Entrar'},up:{t:'Criar conta',s:'Leva menos de um minuto.',f:['nm','em','pw','pw2','cv','ac'],b:'Criar conta'},forgot:{t:'Recuperar senha',s:'Enviamos um link de recuperação para o seu e-mail.',f:['em'],b:'Enviar link'},reset:{t:'Nova senha',s:'Escolha uma nova senha de pelo menos 8 caracteres.',f:['pw','pw2'],b:'Salvar nova senha'}};
+const wk=()=>'wel:'+TOKEN.slice(0,8);
+const prim=n=>{n=String(n||'').trim().split(/\s+/)[0];return n?n.charAt(0).toUpperCase()+n.slice(1):''};
+function welGreet(){const n=prim($('welIn').value||CFG.nome);$('welT').textContent=n?`Olá, ${n}! 👋`:'Olá! 👋'}
+function welcome(){if(ls.get(wk())==='1'||(CFG.sources||[]).length||(CFG.dests||[]).length||CFG.active)return;
+  $('welNm').hidden=!!CFG.nome;$('welIn').value='';welGreet();$('wel').hidden=false;($('welNm').hidden?$('welB'):$('welIn')).focus()}
+function welClose(go){const n=$('welIn').value.trim();$('wel').hidden=true;ls.set(wk(),'1');
+  if(n&&!CFG.nome){CFG.nome=n;if(!DEMO)run(()=>api('/config','PUT',{nome:n}))}
+  if(go){if((location.hash||'#desempenho')!=='#desempenho')location.hash='desempenho';scrollTo(0,0)}}
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('wel').hidden)welClose(false)});
+let VIEW='in',RESET='';
+function lv(v){VIEW=v;const c=LV[v];$('lgT').textContent=c.t;$('lgS').textContent=c.s;$('lgB').textContent=c.b;
+  ['nm','em','pw','pw2','cv','ac'].forEach(k=>$('f_'+k).hidden=!c.f.includes(k));$('pwLbl').textContent=v==='reset'?'Nova senha':'Senha';
+  $('lgPw').autocomplete=v==='in'?'current-password':'new-password';
+  $('lgLinks').innerHTML=v==='in'?'<button type="button" class="lnk" onclick="lv(\'up\')">Criar conta</button><button type="button" class="lnk" onclick="lv(\'forgot\')">Esqueci a senha</button>':'<button type="button" class="lnk" onclick="lv(\'in\')">Já tenho conta</button>'}
+function showLogin(){mrShow(false);$('login').hidden=false;$('nav').hidden=true;$('main').hidden=true;$('backDemo').hidden=!DEMO;
+  const q=new URLSearchParams(location.search).get('reset');if(q&&!DEMO){RESET=q;lv('reset')}else if(new URLSearchParams(location.search).get('cadastro')&&!DEMO)lv('up');else lv('in')}
+function logout(){const t=TOKEN;if(!DEMO&&t)fetch('/api/logout',{method:'POST',headers:{'x-token':t,'Content-Type':'application/json'},body:'{}'}).catch(()=>{});ls.set('tk','');TOKEN='';if(DEMO)showLogin();else location.reload()}
+async function pub(p,body){const r=await fetch('/api'+p,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const j=await r.json();if(!r.ok)throw new Error(j.erro||'Erro inesperado');return j}
+async function lgGo(ev){
+  ev.preventDefault();if(DEMO){toast('Funciona no seu servidor. Aqui é só a demonstração.');return false}
+  const em=$('lgEm').value.trim(),pw=$('lgPw').value,pw2=$('lgPw2').value;
+  try{
+    if(VIEW==='in'){const r=await pub('/login',{email:em,senha:pw});ls.set('tk',r.token);await boot()}
+    else if(VIEW==='forgot'){await pub('/forgot',{email:em});toast('Se o e-mail estiver cadastrado, você receberá o link.');lv('in')}
+    else{
+      if(pw.length<8){toast('A senha precisa ter pelo menos 8 caracteres');return false}
+      if(pw!==pw2){toast('As senhas não conferem');return false}
+      if(VIEW==='up'&&!$('lgNm').value.trim()){toast('Diga como podemos te chamar');return false}
+      if(VIEW==='up'&&!$('lgAc').checked){toast('Aceite os termos para criar a conta');return false}
+      if(VIEW==='up'){const r=await pub('/register',{nome:$('lgNm').value.trim(),email:em,senha:pw,convite:$('lgCv').value.trim(),aceito:$('lgAc').checked});ls.set('tk',r.token);await boot()}
+      else{const r=await pub('/reset',{token:RESET,senha:pw});history.replaceState(null,'',location.pathname);ls.set('tk',r.token);await boot()}
+    }
+  }catch(e){toast(e.message)}
+  return false}
+
+function fill(){
+  const i=CFG.ids||{},t=CFG.templates||{},o=CFG.ofertas||{};
+  $('iAmz').value=i.amazon||'';$('iMl').value=i.ml||'';$('iMg').value=i.magalu||'';
+  $('shId').value=CFG.shopee?.appId||'';$('shSc').placeholder=CFG.shopee?.temSecret?'Salvo no servidor (deixe em branco para manter)':'Fica só no servidor';
+  $('tAli').value=t.aliexpress||'';$('tShe').value=t.shein||'';
+  $('rast').checked=CFG.rastrear!==false&&!!CFG.rastreioDisponivel;$('rast').disabled=!CFG.rastreioDisponivel;
+  $('dly').value=CFG.delay||60;dlyW();
+  $('ofEv').value=o.everyMin||60;$('ofMx').value=o.max||3;$('ofDs').value=o.minDiscount||30;$('ofKw').value=(o.keywords||[]).join(', ');
+  $('actBtn').textContent=CFG.active?'Pausar robô':'Ativar robô';$('ofBtn').textContent=o.active?'Pausar busca de ofertas':'Ativar busca de ofertas';
+  const m=CFG.mensagem||{};$('mdl').value=m.modelo||'classico';$('cst').value=m.custom||'';$('mTop').value=m.topo||'';$('mRod').value=m.rodape||'';$('mCup').value=m.cupom||'';$('mLimp').checked=m.limparConvites!==false;$('mFoto').checked=m.buscarFoto!==false;$('mBlq').value=(m.bloquear||[]).join(', ');mdlChg();
+  const hr=CFG.horarios||{};$('hrOn').checked=!!hr.ativo;HOURS=new Set(hr.horas||[]);drawHr();pillUi();subUi();
+  const pr=CFG.protecao||{};$('pLim').value=pr.limiteDia||150;$('pAq').checked=pr.aquecimento!==false;$('pVar').checked=pr.variar!==false;
+  $('ofPmin').value=o.precoMin||'';$('ofPmax').value=o.precoMax||'';$('admNs').hidden=$('admA').hidden=!CFG.admin;limites();campUi();drawSubs()}
+let FB=0;
+function campUi(){const c=CFG.campanha,b=$('campBox');if(!c){b.hidden=true;return}
+  const v=c.valor,P=CFG.planos||PL_DEMO;
+  const val=v.posts?`<p>Nestes dias o Linkfly postou <b>${v.posts}</b> oferta(s) com <b>${v.links}</b> link(s) com o seu ID${v.cliques?`, que já receberam <b>${v.cliques}</b> clique(s)`:''}. São cerca de <b>${String(v.horas).replace('.',',')} h</b> de trabalho poupado <small class="hint">(estimativa de ${v.minPorPost} min por oferta)</small>. No mesmo ritmo, uns ${String(v.horasMes).replace('.',',')} h por mês.</p>`:'<p>Você ainda não postou ofertas pelo Linkfly. Conecte o WhatsApp e ligue o robô para ver aqui o tempo que ele poupa.</p>';
+  const pr=`<p class="hint">Plano Plus: ${brl(P.plano1.preco)}/mês · Plano Pro (Pro): ${brl(P.plano2.preco)}/mês, cerca de ${brl(P.plano2.preco/30)} por dia.</p>`;
+  if(c.bonus){const bo=c.bonus,h=Math.max(1,Math.ceil((bo.ate-Date.now())/36e5)),novo=P.plano2.preco*(1-bo.pct/100),ok=bo.link&&bo.link!=='#';
+    b.innerHTML=`<h3>🎁 ${c.restamMs>0?'Último dia do seu teste':'Seu teste terminou'}: ${bo.pct}% de desconto no Pro por mais ${h} h</h3><p>${c.restamMs>0?'Depois disso o robô será pausado.':'O robô está pausado até você assinar.'}</p>${val}<p>Use o cupom <span class="cp">${esc(bo.codigo)}</span> e leve o <b>Plano Pro (Pro)</b> por <b>${brl(novo)}</b> <s class="hint">${brl(P.plano2.preco)}</s>. Oferta válida só por mais ${h} hora(s).</p>${pr}
+    <div class="acts">${ok?`<a href="${esc(bo.link)}" target="_blank" rel="noopener"><button type="button">Assinar o Pro com ${bo.pct}% OFF</button></a>`:''}<button class="sec" onclick="navigator.clipboard&&navigator.clipboard.writeText('${esc(bo.codigo)}');toast('Cupom copiado')">Copiar cupom</button><a href="#planos"><button class="sec" type="button">Ver planos</button></a></div>`}
+  else if(c.feedback){b.innerHTML=`<h3>Dia ${c.dia} do teste: o que você está achando?</h3>${val}${pr}<div class="acts" id="fbStars">${[1,2,3,4,5].map(n=>`<button type="button" class="sec tiny" data-n="${n}" onclick="fbPick(${n})" aria-label="Nota ${n}">${'⭐'.repeat(n)}</button>`).join('')}</div><textarea id="fbTxt" maxlength="500" placeholder="O que você gostou? O que está faltando? (opcional)"></textarea><div class="acts"><button onclick="fbSend()">Enviar</button><button class="sec" onclick="fbClose()">Agora não</button></div>`;FB=0}
+  b.hidden=false}
+const fbPick=n=>{FB=n;document.querySelectorAll('#fbStars button').forEach(x=>x.classList.toggle('sec',+x.dataset.n!==n))};
+const fbSend=()=>run(async()=>{if(!FB){toast('Escolha uma nota de 1 a 5');return}await api('/feedback','POST',{nota:FB,comentario:$('fbTxt').value});CFG.campanha=null;campUi();toast('Obrigado! Isso ajuda a melhorar o Linkfly.')});
+const fbClose=()=>run(async()=>{await api('/campanha/fechar','POST',{});CFG.campanha=null;campUi()});
+function limites(){const p=CFG.planoInfo;if(!p)return;
+  const set=(id,ok,last)=>{const e=$(id);[...e.options].forEach(o=>o.disabled=!ok(o));if(e.selectedOptions[0]?.disabled){const v=[...e.options].filter(o=>!o.disabled);if(v.length)e.value=(last?v[v.length-1]:v[0]).value}};
+  set('dly',o=>p.delays.includes(+o.value),false);dlyW();
+  set('ofEv',o=>+o.value>=p.ofertas.everyMin,false);
+  set('ofMx',o=>+o.value<=p.ofertas.max,true);
+  set('pLim',o=>+o.value<=p.enviosDia,true);
+  [...$('mdl').options].forEach(o=>{if(o.value==='custom'){o.disabled=!p.modeloCustom;o.textContent=p.modeloCustom?'Personalizado':'Personalizado (a partir do Plano Plus)'}});
+  if(!p.modeloCustom&&$('mdl').value==='custom'){$('mdl').value='classico';mdlChg()}
+  $('hrOn').disabled=!p.horarios;$('hrLock').hidden=!!p.horarios;if(!p.horarios)$('hrOn').checked=false}
+function subUi(){const b=$('subBar'),d=CFG.expira?Math.ceil((CFG.expira-Date.now())/864e5):null,t2=CFG.testeP2||{};let t='';
+  if(CFG.acesso==='bloqueado')t='Conta bloqueada. Fale com o suporte.';
+  else if(CFG.acesso==='vencido')t='Sua assinatura venceu e o robô está pausado.';
+  else{const p=[];
+    if(t2.ativo)p.push(`Teste do Plano Pro: restam ${rest(t2.ate-Date.now())}.`);
+    if(CFG.plano==='teste'&&d!==null)p.push(`Teste grátis: ${Math.max(d,0)} dia(s) restante(s).`);
+    if(t2.disponivel)p.push(`Teste o Plano Pro por ${t2.dias||5} dias, grátis.`);
+    t=p.join(' ')}
+  b.hidden=!t;b.textContent=t;
+  if(t&&CFG.acesso!=='bloqueado'){const a=document.createElement('a');a.href='#planos';a.style.cssText='color:inherit;font-weight:700;margin-left:8px';a.textContent='Ver planos';b.append(a)}}
+const ago=t=>{if(!t)return 'nunca';const m=Math.round((Date.now()-t)/60000);return m<1?'agora há pouco':m<60?`há ${m} min`:`há ${Math.round(m/60)} h`};
+const loadDiag=()=>run(async()=>{
+  const d=await api('/diagnostico'),wOk=!!d.webhookOk;
+  const ck=(c,t)=>`<div class="os"><span class="ck${c?' ok':''}">${c?'✓':''}</span><span style="flex:1">${t}</span></div>`;
+  $('dgSt').innerHTML=ck(d.estado==='open','WhatsApp conectado')+ck(!!CFG.active,'Robô ativo')+ck((CFG.sources||[]).length>0,'Grupo para copiar escolhido')+ck((CFG.dests||[]).length>0,'Grupo para postar escolhido')
+    +ck(wOk,wOk?'O Evolution está enviando as mensagens para o painel':'O Evolution ainda não envia as mensagens para o painel. Clique em “Reconfigurar recebimento”.')
+    +`<p class="hint">Mensagens recebidas do WhatsApp: ${d.recebidas}. Última: ${ago(d.ultimoWebhook)}. Na fila: ${d.fila}.</p>`;
+  $('dgList').innerHTML=d.eventos.length?`<table><tbody>${d.eventos.map(e=>`<tr><td>${new Date(e.t).toLocaleTimeString('pt-BR')}</td><td>${e.ok?'✅':'⚠️'} ${esc(e.motivo)}${e.grupo?` <small class="hint">(${esc(e.grupo)})</small>`:''}${e.n>1?` ×${e.n}`:''}</td></tr>`).join('')}</tbody></table>`:'<p class="hint" style="margin:0">Nada ainda. Poste uma oferta com link num grupo de “Copiar” e clique em Atualizar.</p>'});
+const resetWebhook=()=>run(async()=>{await api('/webhook/reset','POST',{});toast('Recebimento reconfigurado. Poste uma oferta de teste.');loadDiag()});
+const saveProt=()=>run(async()=>{await put({protecao:{limiteDia:+$('pLim').value,aquecimento:$('pAq').checked,variar:$('pVar').checked}});ls.set('ob4','1');toast('Proteção salva')});
+const exportCsv=()=>run(async()=>{if(DEMO){toast('Disponível no seu servidor');return}
+  const r=await fetch('/api/export.csv',{headers:{'x-token':TOKEN}});if(!r.ok){let m='Não foi possível exportar';try{m=(await r.json()).erro||m}catch(e){}throw new Error(m)}
+  const u=URL.createObjectURL(await r.blob()),a=document.createElement('a');a.href=u;a.download='historico-linkfly.csv';a.click();URL.revokeObjectURL(u)});
+
+// ---- planos
+function plFeat(p){const dl=p.delays.map(d=>d===60?'1 min':d+' s').join(', ');
+  return [[1,`${p.origens} grupo${p.origens>1?'s':''} de origem (copiar)`],[1,`${p.destinos} grupo${p.destinos>1?'s':''} de destino (postar)`],[1,p.enviosDia>=100000?'Envios por dia ilimitados':`Até ${p.enviosDia} envios por dia`],[1,p.horasDia?`Robô ativo por até ${p.horasDia} horas por dia`:'Robô ativo o dia todo'],[1,p.agoraDia?`Enviar agora: até ${p.agoraDia} por dia`:p.enviosDia>=100000?'Enviar agora ilimitado':'Enviar agora: dentro do limite de envios do dia'],
+  [1,`Busca de ofertas Shopee: ${p.ofertas.keywords} palavra${p.ofertas.keywords>1?'s':''}-chave, ${p.ofertas.max} oferta${p.ofertas.max>1?'s':''} por busca, a cada ${fmMin(p.ofertas.everyMin)} ou mais`],
+  [1,`Intervalo entre envios: ${dl}`],[1,'Rastreio de cliques e desempenho'],[p.horarios,'Horários de pico'],[p.modeloCustom,'Mensagem personalizada (modelo próprio)'],[!p.anuncio,'Sem anúncios do Linkfly nos seus grupos'],[p.relatorios,'Resumo da semana, exportar planilha (CSV) e Sub ID personalizado']]}
+const startP2=()=>run(async()=>{
+  const t=CFG.testeP2||{},n=t.dias||5;
+  if(!confirm(`Começar agora o teste grátis de ${n} dias do Plano Pro? Ele só pode ser feito uma vez por conta.`))return;
+  await api('/teste-plano2','POST',{});
+  if(DEMO){CFG.testeP2={ativo:true,ate:Date.now()+n*864e5,usado:true,disponivel:false,dias:n};CFG.planoInfo=PL_DEMO.plano2}
+  else await reloadCfg();
+  limites();subUi();loadPlanos();toast(`Plano Pro liberado por ${n} dias. Aproveite!`)});
+function loadPlanos(){const P=CFG.planos||PL_DEMO,cur=CFG.plano,links=CFG.linksPlano||{},t=CFG.testeP2||{},full='style="width:100%"';
+  const volta=cur==='teste'?'plano grátis':P[cur]?.nome||'plano atual';
+  $('plBody').innerHTML=(t.ativo?`<div class="tip">✨ Você está testando o <b>Plano Pro</b>: restam <b>${rest(t.ate-Date.now())}</b>. Depois a sua conta volta ao ${esc(volta)}.</div>`:'')+'<div class="pg">'+['teste','plano1','plano2'].map(k=>{const p=P[k],on=k===cur,d=CFG.expira?Math.ceil((CFG.expira-Date.now())/864e5):null;
+    let btn;
+    if(k==='teste')btn=on&&d!==null?`<button class="sec" disabled ${full}>${d>0?`Seu plano atual · ${d} dia(s)`:'Teste encerrado'}</button>`:`<button class="sec" disabled ${full}>Só no cadastro</button>`;
+    else if(on)btn=`<button class="sec" disabled ${full}>Seu plano atual</button>`;
+    else{const teste=k==='plano2'&&t.disponivel,
+      ass=links[k]&&links[k]!=='#'?`<a href="${esc(links[k])}" target="_blank" rel="noopener"><button type="button"${teste?' class="sec"':''} ${full}>Assinar ${esc(p.nome)}</button></a>`:`<button class="sec" ${full} onclick="toast('Fale com o suporte para assinar.')">Assinar</button>`;
+      btn=(teste?`<button type="button" ${full} onclick="startP2()">Testar ${t.dias||5} dias grátis</button>`:'')+ass}
+    const nota=k==='plano2'&&!on?(t.ativo?`<div class="p2t">✨ Teste ativo: restam ${rest(t.ate-Date.now())}</div>`:t.disponivel?`<div class="p2t">🎁 ${t.dias||5} dias grátis para conhecer, sem cartão</div>`:t.usado?`<p class="hint" style="margin:0 0 10px">Você já usou o teste grátis de ${t.dias||5} dias.</p>`:''):'';
+    const tag=k==='plano1'?'Mais vantajoso para iniciantes':k==='plano2'?'Mais completo':'';
+    return `<div class="pc${on?' cur':''}${k==='plano1'?' rec':''}">${tag?`<span class="tag">${tag}</span>`:''}<h3>${esc(k==='teste'?'Plano grátis':p.nome)}</h3><span class="hint">${k==='teste'?'Período de teste de 10 dias':k==='plano1'?'Para começar a vender':'Para quem quer escalar'}</span><div class="pr">${p.preco?brl(p.preco):'R$ 0'}${p.preco?'<small> /mês</small>':''}</div>
+    <ul>${plFeat(p).map(f=>`<li${f[0]?'':' class="no"'}>${esc(f[1])}</li>`).join('')}</ul>${nota}<div class="btns">${btn}</div></div>`}).join('')+'</div><p class="hint">Use sempre o mesmo e-mail do cadastro ao assinar: o plano é liberado automaticamente. O WhatsApp pode bloquear números que usam automação, em qualquer plano.</p>'}
+
+// ---- administração
+const ST={ok:['Ativo',''],vencido:['Vencido','w'],bloqueado:['Bloqueado','r']};
+async function loadFb(){const f=await api('/admin/feedback').catch(()=>[]);
+  $('admFb').innerHTML=f.length?`<table><thead><tr><th>Cliente</th><th>Dia</th><th>Nota</th><th>Comentário</th></tr></thead><tbody>${f.map(x=>`<tr><td>${esc(x.email)}</td><td>${x.dia}</td><td>${'⭐'.repeat(x.nota)}</td><td>${esc(x.comentario||'—')}</td></tr>`).join('')}</tbody></table>`:'<p class="hint" style="margin:0">Ninguém respondeu ainda. A pergunta aparece para cada cliente a partir do dia 7 do teste.</p>'}
+async function loadAdmin(){loadFb();
+  const u=await api('/admin/users'),n=f=>u.filter(f).length;
+  $('admKp').innerHTML=[['Clientes',u.length,'#12b886'],['Em teste',n(x=>x.plano==='teste'&&x.acesso==='ok'),'#3b82f6'],['Pagantes',n(x=>x.plano!=='teste'&&x.acesso==='ok'),'#a855f7'],['Vencidos ou bloqueados',n(x=>x.acesso!=='ok'),'#f59e0b']].map(k=>`<div class="box kc" style="--k:${k[2]}"><b>${k[1]}</b><span>${k[0]}</span></div>`).join('');
+  $('admTb').innerHTML=u.length?`<table><thead><tr><th>Cliente</th><th>Plano</th><th>Situação</th><th>Posts</th><th>Cliques</th><th>Último envio</th><th>Ações</th></tr></thead><tbody>${u.map(x=>{const s=ST[x.acesso]||[x.acesso,'w'];
+    return `<tr><td>${esc(x.email)}</td><td><select class="tiny" aria-label="Plano de ${esc(x.email)}" onchange="admPlano('${esc(x.id)}',this.value)">${Object.keys(PNOME).map(k=>`<option value="${k}"${k===x.plano?' selected':''}>${PNOME[k]}</option>`).join('')}</select><br><small class="hint">${x.expira?'até '+new Date(x.expira).toLocaleDateString('pt-BR'):'sem prazo'}</small>${x.testeP2?'<br><small class="hint">✨ testando o Plano Pro</small>':''}</td><td><span class="bd ${s[1]}">${s[0]}</span></td><td>${x.posts}</td><td>${x.cliques}</td><td>${x.ultimo?new Date(x.ultimo).toLocaleString('pt-BR'):'—'}</td>
+    <td><div class="acts" style="margin:0"><button class="sec tiny" onclick="admAct('${x.id}','d10')">+10 dias</button><button class="sec tiny" onclick="admAct('${x.id}','dias')">+30 dias</button><button class="sec tiny" onclick="admAct('${x.id}','${x.bloqueado?'desb':'bloq'}')">${x.bloqueado?'Desbloquear':'Bloquear'}</button><button class="sec tiny" onclick="admAct('${x.id}','senha')">Link de senha</button></div></td></tr>`}).join('')}</tbody></table>`:'<p class="hint" style="margin:0">Nenhum cliente ainda.</p>'}
+const admAct=(id,k)=>run(async()=>{
+  if(k==='senha'){const r=await api('/admin/users/'+id+'/reset','POST',{});try{await navigator.clipboard.writeText(r.link);toast('Link copiado. Envie ao cliente (vale 1 hora).')}catch(e){toast(r.link)}return}
+  await api('/admin/users/'+id,'PUT',k==='dias'?{addDias:30}:k==='d10'?{addDias:10}:{bloqueado:k==='bloq'});toast('Feito');loadAdmin()});
+const admPlano=(id,plano)=>run(async()=>{await api('/admin/users/'+id,'PUT',{plano});toast('Plano alterado');loadAdmin()});
+function pillUi(){const p=$('pill');p.classList.toggle('on',!!CFG.active);p.textContent=CFG.active?'Robô ativo':'Robô pausado';p.title=CFG.active?'Clique para pausar':'Clique para ativar'}
+
+const DW={10:'Risco alto de bloqueio do seu número. Use um número dedicado a isso.',30:'Risco moderado de bloqueio do seu número.',60:'Menor risco, mas nenhum intervalo elimina a chance de bloqueio do número.'};
+function dlyW(){$('dlyWn').textContent=DW[$('dly').value]}
+async function put(b){await api('/config','PUT',b);Object.assign(CFG,b);fill()}
+
+const saveLojas=()=>run(async()=>{
+  const b={ids:{amazon:$('iAmz').value.trim(),ml:$('iMl').value.trim(),magalu:$('iMg').value.trim()},templates:{aliexpress:$('tAli').value.trim(),shein:$('tShe').value.trim()},
+    shopee:{appId:$('shId').value.trim(),secret:$('shSc').value.trim()},...(CFG.rastreioDisponivel?{rastrear:$('rast').checked}:{})};
+  await api('/config','PUT',b);Object.assign(CFG,{ids:b.ids,templates:b.templates,rastrear:b.rastrear??CFG.rastrear,shopee:{appId:b.shopee.appId,temSecret:!!b.shopee.secret||CFG.shopee?.temSecret}});$('shSc').value='';fill();toast('Lojas salvas')});
+const saveDelay=()=>run(async()=>{await put({delay:+$('dly').value});toast('Intervalo salvo')});
+const toggleActive=()=>run(async()=>{const a=!CFG.active;await put({active:a});toast(a?'Robô ativado':'Robô pausado')});
+const saveOfe=m=>run(async()=>{
+  const o={active:m==='toggle'?!(CFG.ofertas?.active):!!CFG.ofertas?.active,everyMin:+$('ofEv').value,max:+$('ofMx').value,minDiscount:+$('ofDs').value,keywords:$('ofKw').value.split(',').map(x=>x.trim()).filter(Boolean),precoMin:+String($('ofPmin').value).replace(',','.')||0,precoMax:+String($('ofPmax').value).replace(',','.')||0};
+  await put({ofertas:o});toast(m==='toggle'?(o.active?'Busca de ofertas ativada':'Busca de ofertas pausada'):'Ofertas salvas')});
+
+// ---- conexão e grupos
+const checkStatus=()=>run(async()=>{const s=await api('/status');
+  $('stt').textContent={open:'WhatsApp conectado.',connecting:'Conectando… escaneie o QR code.',close:'WhatsApp desconectado.',sem_instancia:'Ainda não conectado. Gere o QR code.',erro:'Não foi possível verificar a conexão.'}[s.estado]||('Estado: '+s.estado)});
+const getQr=()=>run(async()=>{const q=await api('/qr');
+  $('qr').innerHTML=q.base64?`<img alt="QR code do WhatsApp" width="220" height="220" src="${esc(q.base64)}">`:'<p class="hint">Em produção o QR code aparece aqui.</p>'});
+const loadGroups=()=>run(async()=>{GROUPS=await api('/groups');CFG.names={...CFG.names,...Object.fromEntries(GROUPS.map(g=>[g.id,g.nome]))};drawGroups()});
+function drawGroups(){
+  const S=CFG.sources||[],D=CFG.dests||[];
+  $('grp').innerHTML=GROUPS.length?'<div class="gr" style="font-weight:600"><span>Grupo</span><span>Copiar</span><span>Postar</span></div>'+GROUPS.map(g=>`<label class="gr"><span>${esc(g.nome)}</span><span><input type="checkbox" class="so" value="${esc(g.id)}" ${S.includes(g.id)?'checked':''} onchange="excl(this,'de')" aria-label="Copiar de ${esc(g.nome)}"></span><span><input type="checkbox" class="de" value="${esc(g.id)}" ${D.includes(g.id)?'checked':''} onchange="excl(this,'so')" aria-label="Postar em ${esc(g.nome)}"></span></label>`).join(''):'<p class="hint">Nenhum grupo encontrado.</p>'}
+function excl(el,other){if(el.checked)el.closest('.gr').querySelector('.'+other).checked=false}
+const saveGroups=()=>run(async()=>{
+  if(!GROUPS.length){toast('Carregue seus grupos primeiro');return}
+  const g=c=>[...document.querySelectorAll('#grp .'+c+':checked')].map(x=>x.value);
+  if(g('so').length>10){toast('Máximo de 10 grupos para copiar');return}
+  await put({sources:g('so'),dests:g('de')});await reloadCfg();toast('Grupos salvos')});
+
+// ---- enviar agora
+async function loadEnviar(){
+  const inb=await api('/inbox');
+  $('inbox').innerHTML=inb.length?inb.map((m,i)=>`<div class="msg"><div><small>${esc(m.grupo)}, ${new Date(m.t).toLocaleString('pt-BR')}</small><br>${esc(m.text.slice(0,220))}</div><button class="sec" onclick="usePick(${i})">Usar</button></div>`).join(''):'<p class="hint">Nenhuma oferta recebida ainda. Elas aparecem aqui assim que algum grupo de origem postar.</p>';
+  window._inb=inb;
+  $('nowTo').innerHTML=(CFG.dests||[]).length?(CFG.dests).map(d=>`<label class="chk"><input type="checkbox" class="nt" value="${esc(d)}" checked> ${esc(nm(d))}</label>`).join(''):'<p class="hint">Escolha um grupo para postar em “WhatsApp e grupos”.</p>'}
+function usePick(i){const m=window._inb[i];PICK=m.id;$('nowTxt').value=m.text;$('nowOut').innerHTML='';$('nowTxt').scrollIntoView({behavior:'smooth'})}
+const preview=()=>run(async()=>{const r=await api('/convert','POST',{text:$('nowTxt').value});
+  $('nowOut').innerHTML=r.n?`<div class="out">${esc(r.out)}</div><p class="hint">${r.n} link(s) convertido(s): ${r.lojas.map(l=>LJ[l]||l).join(', ')}.${r.modelo?' Mensagem montada no seu modelo (veja ou mude em Mensagens).':''}${r.foto?' Vai com a foto do produto.':''}</p>`:'<div class="warn">Nenhum link de loja reconhecido. Confira se cadastrou o ID da loja em Lojas.</div>'});
+const sendNow=()=>run(async()=>{
+  const to=[...document.querySelectorAll('.nt:checked')].map(x=>x.value);
+  if(!to.length){toast('Escolha ao menos um grupo');return}
+  $('nowOut').innerHTML='<p class="hint">Enviando…</p>';
+  try{
+    const r=await api('/send','POST',{text:$('nowTxt').value,inboxId:PICK,to});
+    $('nowOut').innerHTML=`<div class="out">Enviado para ${r.enviados} grupo(s).</div>`+(r.falhas||[]).map(f=>`<div class="warn">${esc(f.grupo)}: ${esc(f.erro)}</div>`).join('');
+    toast(r.falhas?.length?'Enviado, mas alguns grupos falharam':'Enviado!')
+  }catch(e){$('nowOut').innerHTML=`<div class="warn">${esc(e.message)}</div>`}});
+
+// ---- histórico
+async function loadHist(){
+  const l=await api('/log');
+  $('hist').innerHTML=l.length?`<table><thead><tr><th>Quando</th><th>Tipo</th><th>Lojas</th><th>Grupo</th><th>Cliques</th><th>Oferta</th></tr></thead><tbody>${l.map(e=>`<tr><td>${new Date(e.t).toLocaleString('pt-BR')}</td><td>${esc(TIPO[e.tipo]||e.tipo)}</td><td>${e.lojas.map(x=>esc(LJ[x]||x)).join(', ')}</td><td>${esc(e.grupo)}</td><td>${e.cliques}</td><td>${esc(e.txt.slice(0,70))}</td></tr>`).join('')}</tbody></table>`:'<p class="hint" style="margin:0">Nada enviado ainda. As ofertas postadas aparecem aqui.</p>'}
+
+// ---- desempenho
+function bars(d,hi){const mx=Math.max(1,...d.map(x=>x.v));return `<div class="bars">${d.map((x,i)=>`<div class="bc" title="${esc(x.t)}"><div class="b${i===hi?' hi':''}" style="height:${x.v/mx*100}%"></div><span>${esc(x.l)}</span></div>`).join('')}</div>`}
+function tbl(rows,h,sub){return rows.length?`<table><thead><tr><th>${h}</th>${sub?'<th>Sub ID</th>':''}<th>Posts</th><th>Cliques</th><th>Média por post</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.nome)}</td>${sub?`<td>${r.sub?`<span class="sbc">${esc(r.sub)}</span>`:'—'}</td>`:''}<td>${r.posts}</td><td>${r.cliques}</td><td>${r.media}</td></tr>`).join('')}</tbody></table>`:'<p class="hint" style="margin:0">Sem dados ainda.</p>'}
+// ---- mensagens
+const PRE={classico:'🔥 {titulo}\n\n💰 De {de} por {preco} ({desconto}% OFF)\n⭐ {avaliacao} | {vendidos} vendidos\n\n🎟️ Cupom: {cupom}\n\n🛒 {link}',minimal:'{titulo}\n{preco} ({desconto}% OFF)\n{cupom}\n{link}',urgencia:'🚨 ACABANDO! {titulo}\n\n❌ {de}\n✅ {preco} ({desconto}% OFF)\n\n🎟️ Cupom: {cupom}\n⏳ Corre que o estoque some!\n👉 {link}'};
+function mdlChg(){const c=$('mdl').value==='custom';$('cstWrap').hidden=!c;if(c&&!$('cst').value)$('cst').value=PRE.classico;prev()}
+function prev(){
+  const v={titulo:'Fone Bluetooth com Cancelamento de Ruído',preco:'R$ 89,90',de:'R$ 199,00',desconto:55,avaliacao:'4.8',vendidos:'2,3 mil',cupom:$('mCup').value.trim(),link:'https://exemplo.link/abc123'};
+  const t=$('mdl').value==='custom'&&$('cst').value?$('cst').value:PRE[$('mdl').value]||PRE.classico;
+  const vz=k=>v[k]===undefined||v[k]===null||v[k]==='';
+  const body=t.split('\n').filter(l=>{const ks=[...l.matchAll(/\{(\w+)\}/g)].map(m=>m[1]);return!(ks.length&&ks.every(vz))}).map(l=>l.replace(/\{(\w+)\}/g,(_,k)=>v[k]??'').trimEnd()).join('\n').replace(/\n{3,}/g,'\n\n').trim();
+  $('mPrev').textContent=[$('mTop').value.trim(),body,$('mRod').value.trim()].filter(Boolean).join('\n\n')}
+const saveMsg=()=>run(async()=>{await put({mensagem:{modelo:$('mdl').value,custom:$('cst').value,topo:$('mTop').value.trim(),rodape:$('mRod').value.trim(),cupom:$('mCup').value.trim(),limparConvites:$('mLimp').checked,buscarFoto:$('mFoto').checked,bloquear:$('mBlq').value.split(',').map(x=>x.trim()).filter(Boolean)}});ls.set('ob4','1');toast('Mensagem salva')});
+
+// ---- horários de pico
+let HOURS=new Set();
+function drawHr(){$('hrGrid').innerHTML=Array.from({length:24},(_,h)=>`<button type="button" class="hbtn${HOURS.has(h)?' on':''}" aria-pressed="${HOURS.has(h)}" onclick="tgH(${h})">${h}h</button>`).join('');$('hrInfo').textContent=HOURS.size?`${HOURS.size} horário(s) selecionado(s). Horário de Brasília.`:'Nenhum horário selecionado.'}
+function tgH(h){HOURS.has(h)?HOURS.delete(h):HOURS.add(h);drawHr()}
+function preset(k){HOURS=new Set(k==='comercial'?[9,10,11,12,13,14,15,16,17,18]:[11,12,13,18,19,20,21,22]);drawHr()}
+const bestHours=()=>run(async()=>{const s=await api('/stats');const b=s.horas.filter(h=>h.posts&&h.media>0).sort((x,y)=>y.media-x.media).slice(0,5);
+  if(b.length){HOURS=new Set(b.map(h=>h.h));drawHr();toast('Selecionei os 5 horários com mais cliques nas suas ofertas');return}
+  HOURS=new Set([7,8,12,13,19,20,21,22]);drawHr();toast('Ainda sem cliques: usei os horários de pico típicos (manhã, almoço e noite)')});
+function initRange(){$('hrDe').innerHTML=Array.from({length:24},(_,h)=>`<option value="${h}">${h}h</option>`).join('');
+  $('hrAte').innerHTML=Array.from({length:24},(_,i)=>i+1).map(h=>`<option value="${h}">${h===24?'24h (meia-noite)':h+'h'}</option>`).join('');$('hrDe').value=6;$('hrAte').value=22}
+function applyRange(){const de=+$('hrDe').value,ate=+$('hrAte').value%24;HOURS=new Set();
+  if(de===ate){for(let h=0;h<24;h++)HOURS.add(h)}else for(let h=de;h!==ate;h=(h+1)%24)HOURS.add(h);
+  $('hrOn').checked=true;drawHr()}
+const saveHr=()=>run(async()=>{if($('hrOn').checked&&!HOURS.size){toast('Escolha ao menos um horário');return}await put({horarios:{ativo:$('hrOn').checked,horas:[...HOURS].sort((x,y)=>x-y)}});toast('Horários salvos')});
+
+// ---- desempenho
+const WD=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+async function loadStats(){
+  const s=await api('/stats'),t=s.total,med=t.posts?(t.cliques/t.posts).toFixed(1):'0';
+  const st0=await api('/status').catch(()=>({}));
+  const [sd,rsm]=await Promise.all([api('/saude').catch(()=>null),api('/resumo-semana').catch(()=>null)]);
+  const topo=resumoHtml(rsm)+saudeHtml(sd);
+  const steps=[
+    ['Conectar o WhatsApp',st0.estado==='open','conexao','Use um chip dedicado, não o seu número pessoal.|No celular: WhatsApp, Aparelhos conectados, Conectar um aparelho.|Aqui, clique em Gerar QR code e escaneie.'],
+    ['Escolher os grupos para copiar e postar',(CFG.sources||[]).length>0&&(CFG.dests||[]).length>0,'conexao','Crie um grupo só seu para testar: ele será o grupo de postar.|Clique em Carregar meus grupos.|Marque um grupo em Copiar (de onde vêm as ofertas) e outro em Postar, e salve.'],
+    ['Cadastrar seus IDs das lojas',!!(Object.values(CFG.ids||{}).some(Boolean)||Object.values(CFG.templates||{}).some(Boolean)||CFG.shopee?.appId),'lojas','Comece por uma loja só, por exemplo a Amazon.|Em Lojas, abra “Onde encontro cada ID?” para ver onde achar o seu.'],
+    ['Revisar mensagem e proteção do número',ls.get('ob4')==='1','mensagens','Em Mensagens, escolha o estilo da oferta e confira a prévia.|Em Automação, mantenha o intervalo de 1 minuto e o aquecimento ligado.|Em Horários, escolha quando o robô pode postar (opcional).'],
+    ['Ativar o robô e fazer o primeiro teste',!!CFG.active,'auto','Em Automação, clique em Ativar robô.|Poste uma oferta com link no grupo de Copiar.|Em até 1 minuto ela chega no grupo de Postar com o seu ID. Se não chegar, veja “O que o robô está fazendo”, em Automação.']
+  ];
+  const dn=steps.filter(x=>x[1]).length,nx=steps.findIndex(x=>!x[1]);
+  const onb=dn<steps.length?`<div class="box ob"><h3>Primeiros passos: ${dn} de ${steps.length}</h3><div class="prog"><i style="width:${dn/steps.length*100}%"></i></div>${steps.map((x,i)=>`<div class="os" style="flex-wrap:wrap"><span class="ck${x[1]?' ok':''}">${x[1]?'✓':i+1}</span><span style="flex:1;${x[1]?'color:var(--mut)':''}">${x[0]}</span>${x[1]?'':`<button class="sec" onclick="location.hash='${x[2]}'">Fazer agora</button><details class="how" style="flex-basis:100%;padding-left:34px"${i===nx?' open':''}><summary>Como fazer</summary><ol>${x[3].split('|').map(t=>`<li>${esc(t)}</li>`).join('')}</ol></details>`}</div>`).join('')}</div>`:'';
+  const best=a=>a.filter(x=>x.posts&&x.media>0).sort((x,y)=>y.media-x.media)[0];
+  const bh=best(s.horas),bd=best(s.semana),bg=s.grupos.find(g=>g.cliques);
+  const bl=s.lojas.filter(l=>l.links&&l.cliques).map(l=>({...l,r:l.cliques/l.links})).sort((x,y)=>y.r-x.r)[0];
+  const ins=[];
+  if(bh)ins.push(`Melhor horário: <b>${bh.h}h</b>, com ${bh.media} cliques por postagem.`);
+  if(bd)ins.push(`Melhor dia: <b>${WD[bd.d]}</b>, com ${bd.media} cliques por postagem.`);
+  if(bl)ins.push(`Loja que mais converte: <b>${esc(LJ[bl.loja]||bl.loja)}</b>, com ${bl.r.toFixed(1)} cliques por link.`);
+  if(bg)ins.push(`Grupo que mais rende: <b>${esc(bg.nome)}</b>, com ${bg.cliques} cliques.`);
+  const mxl=Math.max(1,...s.lojas.map(l=>l.links));
+  const dd=k=>bars(s.dias.map((d,i)=>({v:d[k],l:i%2?'':d.d.slice(8)+'/'+d.d.slice(5,7),t:`${d.d}: ${d.links} links, ${d.cliques} cliques`})));
+  $('stBody').innerHTML=(s.rastreio?'':'<div class="warn" style="margin:0 0 16px">Cliques indisponíveis: defina PUBLIC_URL no servidor e ative “Rastrear cliques” em Lojas.</div>')+
+  `${topo}${onb}<div class="kp"><div class="box kc" style="--k:#12b886"><b>${t.posts}</b><span>Postagens</span></div><div class="box kc" style="--k:#3b82f6"><b>${t.links}</b><span>Links enviados</span></div><div class="box kc" style="--k:#f59e0b"><b>${t.cliques}</b><span>Cliques</span></div><div class="box kc" style="--k:#a855f7"><b>${med}</b><span>Cliques por postagem</span></div></div>
+  <div class="box"><h3>O que os seus cliques mostram</h3>${ins.length?`<ul class="ins">${ins.map(x=>`<li>${x}</li>`).join('')}</ul>`:'<p class="hint" style="margin:0">Quando as ofertas receberem cliques, as dicas aparecem aqui.</p>'}${bh?'<div class="acts"><button class="sec" onclick="location.hash=\'horarios\'">Ajustar meus horários de pico</button></div>':''}</div>
+  <div class="row"><div class="box" style="margin:0"><h3>Links por dia</h3>${dd('links')}</div><div class="box" style="margin:0"><h3>Cliques por dia</h3>${dd('cliques')}</div></div>
+  <div class="box" style="margin-top:16px"><h3>Cliques por postagem em cada horário</h3>${bars(s.horas.map(x=>({v:x.media,l:x.h%3?'':x.h+'h',t:`${x.h}h: ${x.media} cliques por postagem (${x.posts} posts)`})),bh?bh.h:-1)}</div>
+  <div class="box"><h3>Cliques por postagem em cada dia da semana</h3>${bars(s.semana.map(x=>({v:x.media,l:WD[x.d],t:`${WD[x.d]}: ${x.media} cliques por postagem (${x.posts} posts)`})),bd?bd.d:-1)}</div>
+  <div class="box"><h3>Links por loja</h3>${s.lojas.length?s.lojas.map(l=>`<div class="hb"><span style="display:flex;gap:8px;align-items:center">${lg(l.loja,22)}${esc(LJ[l.loja]||l.loja)}</span><i style="width:${l.links/mxl*100}%"></i><span>${l.links} links, ${l.cliques} cliques</span></div>`).join(''):'<p class="hint" style="margin:0">Sem dados ainda.</p>'}</div>
+  <div class="box"><h3>Ofertas que mais renderam</h3>${s.top.length?`<table><thead><tr><th>Oferta</th><th>Loja</th><th>Grupo</th><th>Cliques</th></tr></thead><tbody>${s.top.map(e=>`<tr><td>${esc(e.txt.slice(0,60))}</td><td>${e.lojas.map(x=>esc(LJ[x]||x)).join(', ')}</td><td>${esc(e.grupo)}</td><td>${e.cl}</td></tr>`).join('')}</tbody></table>`:'<p class="hint" style="margin:0">Sem cliques ainda.</p>'}</div>
+  <div class="box"><h3>Grupos onde você posta</h3>${tbl(s.grupos,'Grupo',true)}</div>
+  <div class="box"><h3>Grupos de onde você copia</h3>${tbl(s.origens,'Grupo')}</div>`}
+
+
+// ---- Mariana: mascote animado com a logo do Linkfly (o aviãozinho)
+function mascot(mood='ok',z=88,cls=''){
+  const pl='<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>';
+  return `<svg class="mas s-${mood} ${cls}" width="${z}" height="${z}" viewBox="0 0 100 100" role="img" aria-label="Mariana, assistente do Linkfly">
+  <ellipse class="sh" cx="50" cy="97" rx="24" ry="3" fill="currentColor" opacity=".13"/>
+  <g class="bob">
+    <circle cx="50" cy="12" r="9" fill="#3b2a2a"/>
+    <ellipse cx="50" cy="44" rx="29" ry="31" fill="#3b2a2a"/>
+    <path d="M17 99 Q17 73 50 73 Q83 73 83 99 Z" fill="url(#lfg)"/>
+    <rect x="43" y="60" width="14" height="16" rx="6" fill="#e3a982"/>
+    <ellipse cx="50" cy="47" rx="23" ry="25" fill="#f4c7a4"/>
+    <path d="M26 45 Q27 19 50 19 Q73 19 74 45 Q66 31 50 31 Q36 31 26 45 Z" fill="#3b2a2a"/>
+    <path d="M35 42.5 Q40 40 45 42.5 M55 42.5 Q60 40 65 42.5" stroke="#3b2a2a" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <ellipse class="eye" cx="40" cy="49" rx="3.2" ry="4.4" fill="#2b1d1d"/><ellipse class="eye" cx="60" cy="49" rx="3.2" ry="4.4" fill="#2b1d1d"/>
+    <circle cx="41.2" cy="47.4" r="1.2" fill="#fff"/><circle cx="61.2" cy="47.4" r="1.2" fill="#fff"/>
+    <path class="ec" d="M36 49.5 Q40 53 44 49.5 M56 49.5 Q60 53 64 49.5" stroke="#2b1d1d" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <circle cx="33" cy="57" r="4" fill="#ff8fa3" opacity=".45"/><circle cx="67" cy="57" r="4" fill="#ff8fa3" opacity=".45"/>
+    <path class="mo mo-ok" d="M43 60 Q50 67 57 60" stroke="#c0392b" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <path class="mo mo-warn" d="M45 62 L55 62" stroke="#c0392b" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <path class="mo mo-stop" d="M44 64 Q50 59 56 64" stroke="#c0392b" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <g transform="translate(58 81) scale(.44)" fill="#fbbf24" stroke="#f59e0b" stroke-width="2" stroke-linejoin="round"><polygon points="22 2 15 22 11 13 2 9 22 2"/></g>
+    <path class="hl" d="M17 24 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z" fill="#fbbf24"/>
+    <g class="arm"><path d="M70 93 Q89 91 89 73" stroke="url(#lfg)" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="89" cy="68" r="5.5" fill="#f4c7a4"/></g>
+    <text class="zz" x="76" y="22" font-size="13" font-weight="700" fill="currentColor">z</text>
+  </g>
+  <g class="fly"><g transform="translate(-6 88) scale(.5)" fill="none" stroke="#3ee0b3" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">${pl}</g></g>
+  </svg>`}
+const mrMood=m=>{const k=m==='ok'?'ok':m==='parado'?'stop':'warn';$('mrFab').innerHTML=mascot(k,48,'mini')};
+
+// ---- cartão "Seu robô está funcionando?"
+const SD_ACT={conexao:['Conectar agora','conexao'],grupos:['Escolher meus grupos','conexao'],lojas:['Cadastrar meu ID','lojas'],ativar:['Ligar o robô','@ativar'],webhook:['Reconfigurar recebimento','@webhook'],assinatura:['Ver minha assinatura','@assinatura']};
+function doAct(a){const x=SD_ACT[a];if(!x)return;
+  if(x[1]==='@ativar')return run(async()=>{await put({active:true});toast('Robô ligado');if((location.hash||'#desempenho')==='#desempenho')await loadStats()});
+  if(x[1]==='@webhook')return run(async()=>{await api('/webhook/reset','POST',{});toast('Recebimento reconfigurado. Poste uma oferta de teste.');if((location.hash||'#desempenho')==='#desempenho')await loadStats()});
+  if(x[1]==='@assinatura'){location.hash='planos';return}
+  location.hash=x[1]}
+function saudeHtml(d){
+  if(!d)return '';
+  const mood=d.nivel==='ok'?'ok':d.nivel==='parado'?'stop':'warn';mrMood(d.nivel);
+  const T={ok:'Sim! Está funcionando 🎉',falta:'Ainda não. Falta pouco!',atencao:'Quase lá: o último envio falhou',parado:'O robô está parado'}[d.nivel]||'Vamos conferir';
+  const S={ok:'Tudo certo por aqui. Veja o que ele fez por último:',falta:`Falta${d.faltam>1?'m':''} ${d.faltam} passo${d.faltam>1?'s':''}. Siga a lista abaixo 👇`,atencao:'Está ligado, mas o último envio deu erro. Veja o motivo abaixo.',parado:'Sua assinatura venceu ou a conta foi bloqueada.'}[d.nivel]||'';
+  const u=d.ultimo;
+  const ult=u?`<p><b>Último envio:</b> ${u.ok?'✅':'⚠️'} ${esc(u.motivo)} <span class="hint">(${ago(u.t)})</span></p>`:'<p><b>Último envio:</b> <span class="hint">ainda não enviou nada</span></p>';
+  const a=d.proximo&&SD_ACT[d.proximo.acao];
+  return `<div class="box sd ${d.nivel}"><div>${mascot(mood,92)}</div><div style="flex:1"><small>Seu robô está funcionando?</small><h2>${T}</h2><p>${S}</p>
+    <ul class="sd-st">${d.passos.map(x=>`<li class="${x.ok?'':'no'}"><span aria-hidden="true">${x.ok?'✅':'⬜'}</span><span>${esc(x.txt)}</span></li>`).join('')}</ul>${ult}
+    <p class="hint">Hoje: ${d.hoje.n} de ${lim(d.hoje.limite)} postagens · Na fila: ${d.fila}</p>
+    ${a?`<div class="acts"><button onclick="doAct('${esc(d.proximo.acao)}')">${a[0]} →</button></div>`:''}</div>
+    <button type="button" class="sd-r" onclick="run(loadStats)" title="Conferir de novo" aria-label="Conferir de novo">↻</button></div>`}
+
+// ---- resumo da semana passada
+function resumoHtml(r){
+  if(!r||(!r.posts&&!r.cliques)||ls.get('rs'+r.de)==='1')return '';
+  const d=x=>x.slice(8)+'/'+x.slice(5,7),c=r.campeao,cl=n=>n===1?'1 clique':n+' cliques';
+  const code=g=>g.sub?`<code>${esc(g.sub)}</code>`:'';
+  let l1,l2;
+  if(r.rastreio&&c){
+    l1=`As pessoas clicaram <b>${r.cliques}</b> ${r.cliques===1?'vez':'vezes'} nas suas ofertas. O grupo campeão foi “<b>${esc(c.nome)}</b>”, com ${cl(c.cliques)}.`;
+    l2=`Para ver as vendas desse grupo: no relatório da Shopee (coluna Sub ID), procure ${code(c)||'o Sub ID dele'}.`;
+  }else{
+    l1=r.rastreio?`Você postou <b>${r.posts}</b> ${r.posts===1?'oferta':'ofertas'}, mas ainda sem cliques.`:`Você postou <b>${r.posts}</b> ${r.posts===1?'oferta':'ofertas'} nos seus grupos. A contagem de cliques está desligada nesta versão, mas dá para saber qual grupo vende.`;
+    const gs=r.grupos.filter(g=>g.sub).slice(0,5);
+    l2=gs.length?`Para ver as vendas de cada grupo: no relatório da Shopee (coluna Sub ID), procure ${gs.map(g=>`${esc(g.nome)} = ${code(g)}`).join(' · ')}.`:'';
+  }
+  return `<div class="box rs"><button type="button" class="x" onclick="closeRs('${esc(r.de)}')" aria-label="Fechar este resumo">×</button>
+    <b>📊 Resumo da semana passada (${d(r.de)} a ${d(r.ate)})</b><p>${l1}</p>${l2?`<p class="hint" style="color:var(--ink)">${l2}</p>`:''}
+    <button type="button" class="lnk" onclick="location.hash='lojas'">Ver o Sub ID de cada grupo →</button></div>`}
+function closeRs(k){ls.set('rs'+k,'1');run(loadStats)}
+
+// ---- Sub ID por grupo
+async function reloadCfg(){if(DEMO)return;CFG=await api('/me');fill()}
+function drawSubs(){
+  const D=CFG.dests||[],S=CFG.subids||{};
+  $('subList').innerHTML=D.length?D.map((d,i)=>`<div style="margin:0 0 10px"><label for="sb${i}" style="font-weight:500">${esc(nm(d))}</label><input type="text" class="sbi" id="sb${i}" data-g="${esc(d)}" value="${esc(S[d]||'')}" maxlength="20" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="Gerado automaticamente"></div>`).join(''):'<p class="hint" style="margin:0">Escolha em quais grupos postar (menu WhatsApp e grupos) e cada um ganha um Sub ID automático.</p>'}
+const saveSubs=()=>run(async()=>{
+  const b={};document.querySelectorAll('.sbi').forEach(i=>{if(i.value.trim())b[i.dataset.g]=i.value.trim()});
+  if(!Object.keys(b).length){toast('Nenhum grupo para salvar');return}
+  await api('/config','PUT',{subids:b});if(DEMO)CFG.subids={...CFG.subids,...b};else await reloadCfg();drawSubs();toast('Sub IDs salvos')});
+
+// ---- fila de envio
+const eta=s=>s<45?'em instantes':'em ~'+Math.max(1,Math.round(s/60))+' min';
+async function loadFila(){
+  const f=await api('/fila'),b=f.bloqueio,parado=b&&b.tipo!=='intervalo';
+  const prox=f.ofertas?(f.ofertas.proxima?'em '+Math.max(1,Math.round((f.ofertas.proxima-Date.now())/60000))+' min':'em instantes'):'desligada';
+  const ban=b?`<div class="${parado?'warn':'tip'}" style="margin:0 0 14px">${esc(b.txt)}</div>`:'<div class="tip" style="margin:0 0 14px">A fila está vazia: nada esperando para ser postado.</div>';
+  const kp=`<div class="kp qk"><div class="box kc" style="--k:#12b886"><b>${f.itens.length}</b><span>Na fila</span></div><div class="box kc" style="--k:#f59e0b"><b>${f.hoje.n}/${f.hoje.limite>=100000?'∞':f.hoje.limite}</b><span>Postagens hoje</span></div><div class="box kc" style="--k:#3b82f6"><b style="font-size:22px">${prox}</b><span>Próxima busca de ofertas</span></div><div class="box kc" style="--k:#a855f7"><b style="font-size:22px">${f.horarios?f.horarios.length+' h':'Dia todo'}</b><span>Horários de pico</span></div></div>`;
+  const rows=f.itens.map((x,i)=>{const st=parado?'aguardando':x.atual?'enviando agora':eta(i*f.delay*1.05);
+    return `<div class="qi"><span class="qn">${i+1}</span><div style="min-width:0"><b>${esc(x.grupo)}</b>${x.sub?` <span class="sbc">${esc(x.sub)}</span>`:''}<br><span class="hint">${esc(TIPO[x.tipo]||x.tipo)} · entrou ${ago(x.t).replace('agora há pouco','agora')} · <b>${st}</b></span><div class="qt">${esc(x.txt.slice(0,110))}</div></div></div>`}).join('');
+  $('filaBody').innerHTML=ban+kp+`<div class="box">${f.itens.length?rows:'<p class="hint" style="margin:0">Quando o robô achar ou copiar uma oferta, ela aparece aqui até ser postada.</p>'}
+    <div class="acts"><button class="sec" onclick="run(loadFila)">Atualizar</button><button class="sec" onclick="location.hash='horarios'">Ajustar horários</button></div>
+    <p class="hint">Esta tela se atualiza sozinha. O Sub ID mostra o código que vai no link da Shopee de cada grupo.</p></div>`}
+setInterval(()=>{if((location.hash||'')==='#fila'&&!document.hidden&&!$('main').hidden)run(loadFila)},6000);
+
+// ---- Mariana: chat de dúvidas rápidas
+const nz=s=>String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+const MR=[
+ {k:['funcionando','erro','problema','travou','deu errado','nao posta','nao esta postando','nao envia','nao esta enviando','nao funciona','robo parado','nada acontece','nao postou','nao enviou','parou de postar'],a:async()=>{
+   const d=await api('/saude'),pr=d.proximo;
+   if(d.nivel==='ok')return{html:`Sim, está funcionando ✅<br>${d.ultimo?`Último envio: ${esc(d.ultimo.motivo)} (${ago(d.ultimo.t)}).`:'Ainda não enviou nada, mas está pronto.'}<br>Hoje: ${d.hoje.n} de ${lim(d.hoje.limite)} postagens. Na fila: ${d.fila}.`,go:[['Ver a fila','fila']]};
+   if(d.nivel==='atencao')return{html:`Está ligado, mas o último envio falhou: <b>${esc(d.ultimo.motivo)}</b><br>Em Automação você vê o motivo de cada mensagem.`,go:[['Abrir Automação','auto']]};
+   return{html:`Ainda não está funcionando. Falta${d.faltam>1?'m':''} ${d.faltam} passo${d.faltam>1?'s':''}. O próximo é: <b>${esc(pr.txt)}</b>.`,act:pr.acao}}},
+ {k:['conectar','qr code','qrcode','qr','escanear','escanea','aparelhos conectados','ler o codigo','cadastr','meu whatsapp','conecta','vincular','parear','adicionar whatsapp','colocar whatsapp','ligar whatsapp','entrar no whatsapp','usar meu numero','whatsapp'],a:'Para conectar o WhatsApp:<ol><li>Abra <b>WhatsApp e grupos</b> e toque em <b>Gerar QR code</b>.</li><li>No celular: WhatsApp → <b>Aparelhos conectados</b> → <b>Conectar um aparelho</b>.</li><li>Aponte a câmera para o QR code.</li></ol>Use um chip dedicado, não o seu número pessoal.',go:[['Abrir WhatsApp e grupos','conexao']]},
+ {k:['chip','bloqueio','bloqueado','bloquear o numero','banir','banido','risco','numero pessoal','suspen'],a:'O WhatsApp pode bloquear números que usam automação, e nenhuma configuração elimina esse risco. Para reduzir: use um chip dedicado, mantenha o intervalo de 1 minuto, deixe o aquecimento ligado e não passe do limite diário.',go:[['Proteção do número','auto']]},
+ {k:['desconect','caiu','saiu do whatsapp','perdeu a conexao','desligou'],a:'Se o WhatsApp desconectou, o robô para de postar. Abra <b>WhatsApp e grupos</b>, toque em <b>Gerar QR code</b> e escaneie de novo.',go:[['Abrir WhatsApp e grupos','conexao']]},
+ {k:['grupo','copiar','postar em','origem','destino','carregar meus grupos'],a:'<b>Copiar</b>: o robô lê as ofertas desse grupo (até 10 grupos). <b>Postar</b>: o robô envia as ofertas para esse grupo. Um grupo não pode ser os dois ao mesmo tempo. Toque em <b>Carregar meus grupos</b>, marque e salve.',go:[['Escolher grupos','conexao']]},
+ {k:['id de afiliado','onde acho','onde encontro','tag','amazon','mercado livre','magalu','magazine','shein','aliexpress','cadastrar loja','minhas lojas'],a:'Onde achar cada ID:<ul><li><b>Amazon:</b> ID de rastreamento (parece com <i>seunome-20</i>).</li><li><b>Mercado Livre:</b> o valor depois de <i>matt_tool=</i> num link seu.</li><li><b>Magalu:</b> o nome da sua loja no Magazine Você.</li><li><b>AliExpress e Shein:</b> cole o modelo do seu link trocando o endereço por <i>{url_enc}</i>.</li></ul>Comece por uma loja só.',go:[['Abrir Lojas','lojas']]},
+ {k:['shopee','app id','secret','open api'],a:'Na Central de Afiliados da Shopee, abra a seção <b>Open API</b> para ver o App ID e o Secret. Exige conta de afiliado aprovada. Cole em <b>Lojas</b>; o Secret fica só no servidor.',go:[['Abrir Lojas','lojas']]},
+ {k:['sub id','subid','qual grupo vende','grupo vende','vendas por grupo','relatorio da shopee','vende mais'],a:'O <b>Sub ID</b> é um código que vai dentro do link da Shopee de cada grupo. No relatório de vendas da Shopee ele aparece na coluna <b>Sub ID</b>, e assim você descobre qual grupo vende de verdade, mesmo sem contagem de cliques. Cada grupo já ganha um código automático (ex.: lf3a9c) e você pode trocar em <b>Lojas</b>. Vale só para links da Shopee.',go:[['Ver Sub ID dos grupos','lojas']]},
+ {k:['clique','rastre','contagem','public url','zerado','nao conta'],a:async()=>CFG.rastreioDisponivel?{html:'A contagem de cliques precisa de <b>Rastrear cliques</b> ligado em <b>Lojas</b>. Os cliques aparecem em Desempenho e no Histórico. Cliques de robôs e prévias do WhatsApp não contam.',go:[['Abrir Lojas','lojas']]}:{html:'Nesta versão a contagem de cliques está desligada (ela precisa de um endereço público, o <i>PUBLIC_URL</i>). Para saber qual grupo vende, use o <b>Sub ID</b> da Shopee: ele aparece no relatório de vendas.',go:[['Ver Sub ID dos grupos','lojas']]}},
+ {k:['horario','horarios','pico','janela'],a:'Em <b>Horários</b> você escolhe em quais horas o robô pode postar. Fora delas, as ofertas esperam na fila. Tem o botão <b>Sugerir horários de pico</b>, que usa os seus cliques (ou horários típicos, se ainda não houver).',go:[['Abrir Horários','horarios'],['Ver a fila','fila']]},
+ {k:['intervalo','segundos','limite','por dia','aquecimento','quantas postagens','velocidade','devagar'],a:'Em <b>Automação</b> você define o intervalo (10, 30 ou 60 segundos; 1 minuto é o mais seguro) e o limite de postagens por dia. Com o <b>aquecimento</b> ligado, um número novo começa com poucas postagens (20, 40, 60, 90, 120) e vai subindo a cada dia.',go:[['Abrir Automação','auto']]},
+ {k:['mensagem','modelo','cupom','topo','rodape','layout','visual','personalizar','estilo'],a:'Em <b>Mensagens</b> você escolhe o estilo (Clássico, Minimalista, Urgência ou Personalizado), põe cupom, texto no início e no final, e vê a prévia na hora. No modelo personalizado use campos como {titulo}, {preco} e {link}.',go:[['Abrir Mensagens','mensagens']]},
+ {k:['ofertas automaticas','busca de ofertas','desconto minimo','palavras chave','palavra chave','achar ofertas','encontrar ofertas','ofertas da shopee'],a:'O robô pode procurar ofertas da Shopee sozinho: você escolhe de quanto em quanto tempo buscar, quantas ofertas por rodada, o desconto mínimo, palavras-chave e faixa de preço. Ele só posta ofertas bem avaliadas (4,5 estrelas ou mais). Exige conta de afiliado Shopee aprovada.',go:[['Abrir Automação','auto']]},
+ {k:['enviar agora','mandar agora','postar agora','colar','enviar oferta','enviar uma oferta','manual'],a:'Em <b>Enviar agora</b> você pode usar uma oferta recente dos grupos de origem ou colar uma. O Linkfly troca os links pelos seus e envia na hora, sem esperar a fila.',go:[['Abrir Enviar agora','enviar']]},
+ {k:['fila','esperando','demora','demorando','atrasad','pendente','nao saiu'],a:'A <b>Fila de envio</b> mostra o que está esperando para ser postado e o motivo: horário de pico, limite do dia, robô pausado ou o intervalo de segurança entre as postagens.',go:[['Abrir Fila de envio','fila']]},
+ {k:['foto','imagem','sem foto'],a:'As ofertas do robô vão com a foto do produto. Nas mensagens copiadas vai a foto original; se vier sem imagem, o robô tenta achar a foto do produto (opção em <b>Mensagens</b>).',go:[['Abrir Mensagens','mensagens']]},
+ {k:['assinatura','plano','teste','vencid','vencer','pagar','pagamento','renovar','assinar','expira'],a:async()=>{const dias=CFG.expira?Math.ceil((CFG.expira-Date.now())/864e5):null;
+   const t=CFG.acesso==='bloqueado'?'Sua conta está <b>bloqueada</b>. Fale com o suporte.':CFG.acesso==='vencido'?'Sua assinatura <b>venceu</b> e o robô está pausado.':CFG.plano==='teste'&&dias!==null?`Você está no período de teste: restam <b>${Math.max(dias,0)} dia(s)</b>.`:dias!==null?`Seu acesso vai até <b>${new Date(CFG.expira).toLocaleDateString('pt-BR')}</b>.`:'Sua assinatura está em dia.';
+   const t2=CFG.testeP2||{},ex=t2.ativo?` Você está testando o <b>Plano Pro</b>: restam <b>${rest(t2.ate-Date.now())}</b>.`:t2.disponivel?` Você também pode testar o <b>Plano Pro por ${t2.dias||5} dias, grátis</b>, em Planos.`:'';
+   return{html:t+ex+` Plano atual: <b>${esc(PNOME[CFG.plano]||'')}</b>. O teste grátis dura 10 dias; o Plano Plus custa R$ 35,90 (o mais vantajoso para quem está começando) e o Plano Pro, R$ 69,90 por mês.`,go:CFG.acesso!=='bloqueado'?[['Ver planos','planos']]:undefined}}},
+ {k:['senha','esqueci','recuperar','nao consigo entrar','trocar senha','mudar senha','alterar senha'],a:'Na tela de entrada, toque em <b>Esqueci a senha</b> e você recebe um link por e-mail (vale 1 hora). Se o e-mail não chegar, peça um link de senha ao administrador.'},
+ {k:['historico','csv','planilha','exportar','relatorio'],a:'Em <b>Histórico</b> ficam as ofertas enviadas, com o grupo e o Sub ID. O botão <b>Exportar planilha (CSV)</b> baixa tudo para abrir no Excel ou Google Planilhas.',go:[['Abrir Histórico','historico']]},
+ {k:['palavra bloqueada','bloquear palavra','sorteio','convite','link de grupo','tirar convite'],a:'Em <b>Mensagens</b> você lista palavras que fazem o robô ignorar uma mensagem (ex.: sorteio) e liga a opção que tira convites de outros grupos das mensagens copiadas.',go:[['Abrir Mensagens','mensagens']]},
+ {k:['repetid','duplicad','mesma oferta','duas vezes'],a:'O robô não manda a mesma oferta duas vezes em 6 horas, mesmo que ela apareça em vários grupos de origem. Se a oferta foi ignorada, o motivo aparece em <b>Automação</b>.',go:[['Abrir Automação','auto']]},
+ {k:['ativar o robo','pausar','ligar o robo','desligar','pausa','ativar robo'],a:'Para ligar ou pausar o robô, toque na etiqueta <b>Robô ativo/pausado</b> no topo da tela, ou use o botão em <b>Automação</b>.',go:[['Abrir Automação','auto']]},
+ {k:['quem e voce','quem e vc','seu nome','voce e uma pessoa','humana','e uma ia','voce e ia','robo ou pessoa'],a:'Eu sou a <b>Mariana</b>, assistente virtual do Linkfly 💚 Respondo dúvidas básicas sobre o painel e posso conferir se o seu robô está funcionando. Não sou uma pessoa.'},
+ {k:['suporte','atendente','humano','falar com alguem','contato'],a:'Se eu não resolver, fale com quem forneceu o seu acesso ao Linkfly. Ajuda muito contar o que aparece em <b>Automação → O que o robô está fazendo</b>.',go:[['Abrir Automação','auto']]},
+ {k:['primeiros passos','por onde comeco','como comeco','comecar','como usar','como funciona','tutorial','passo a passo','iniciar','por onde'],a:'Para começar, siga estes passos (todos aparecem em <b>Primeiros passos</b>, na tela Desempenho):<ol><li>Conecte o WhatsApp (QR code) em <b>WhatsApp e grupos</b>.</li><li>Marque os grupos: <b>Copiar</b> (de onde o robô lê) e <b>Postar</b> (para onde ele envia).</li><li>Cadastre seus IDs de afiliado em <b>Lojas</b>.</li><li>Revise a mensagem e a proteção.</li><li>Ligue o robô e faça um teste.</li></ol>',go:[['Ver primeiros passos','desempenho']]},
+ {k:['tema','modo escuro','modo claro','escuro','claro','aparencia','mudar cor','trocar cor','cor do painel'],a:'Para trocar o visual, toque no botão com a <b>lua</b> (escuro) ou o <b>sol</b> (claro) no topo da tela. A escolha fica salva na sua conta.'},
+ {k:['link nao trocou','nao trocou','nao converteu','nao virou afiliado','link errado','trocar links','meu link nao','link original','link sem afiliado'],a:'O robô só troca o link quando a loja está cadastrada. Confira:<ul><li><b>Lojas</b>: o ID da Amazon, Mercado Livre e Magalu preenchidos.</li><li><b>Shopee</b>: App ID e Secret.</li><li><b>AliExpress e Shein</b>: o modelo de link.</li></ul>Em <b>Histórico</b> você vê como cada oferta saiu.',go:[['Abrir Lojas','lojas'],['Abrir Histórico','historico']]},
+ {k:['grupos nao aparecem','nao aparece grupo','nao aparecem os grupos','lista de grupos','nao carrega grupo','nao acho meu grupo','meus grupos'],a:'Para os grupos aparecerem: conecte o WhatsApp e toque em <b>Carregar meus grupos</b>. O número conectado precisa participar do grupo. Se acabou de entrar nele, carregue de novo.',go:[['Abrir WhatsApp e grupos','conexao']]},
+ {k:['testar','teste do robo','como testo','fazer um teste','como testar'],a:'Para testar: em <b>Enviar agora</b>, cole uma oferta e envie para um grupo seu de teste. Para testar o robô inteiro, ligue-o e poste uma oferta com link em um grupo marcado em <b>Copiar</b>.',go:[['Abrir Enviar agora','enviar']]},
+ {k:['dois numeros','mais de um whatsapp','varios numeros','outro numero','trocar de numero','mudar de numero','dois whatsapp'],a:'Cada conta do Linkfly conecta <b>um WhatsApp</b> por vez. Para usar outro número, escaneie o QR code de novo com o aparelho dele.',go:[['Abrir WhatsApp e grupos','conexao']]},
+ {k:['celular','aplicativo','instalar','baixar','tela inicial'],a:'O Linkfly é um painel que abre no navegador, no celular ou no computador. Não precisa instalar nada. Dica: nas opções do navegador, use <b>Adicionar à tela inicial</b> para abrir com um toque.'},
+ {k:['sair','logout','deslogar','encerrar sessao'],a:'Para sair da conta, toque em <b>Sair</b> no menu.'},
+ {k:['dados','seguro','seguranca','privacidade','lgpd','termos','politica'],a:'Veja como tratamos os seus dados na <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a> e as regras de uso nos <a href="termos.html" target="_blank" rel="noopener">Termos de uso</a>. O Secret da Shopee fica guardado só no servidor.'},
+ {k:['clientes','administrador','liberar acesso','bloquear cliente','bloqueio um cliente','bloquear um cliente','bloquear conta','bloquear usuario','meus clientes','gerenciar clientes','link de senha','dar dias','adicionar dias','nota do cliente'],a:()=>CFG.admin?{html:'Em <b>Clientes</b> você vê cada conta: plano, validade, posts e cliques. Dá para <b>adicionar dias</b>, <b>bloquear</b>, anotar uma nota privada e gerar um <b>link de nova senha</b> para o cliente.',go:[['Abrir Clientes','admin']]}:{html:'Essa parte é só do administrador do Linkfly. Se precisar de algo na sua conta, fale com quem forneceu o seu acesso.'}},
+ {k:['oi','ola','bom dia','boa tarde','boa noite','e ai','opa'],a:'Oi! 👋 Em que posso ajudar? Pergunte ou toque em um assunto abaixo.'},
+ {k:['obrigad','obrigada','valeu','tchau','ate mais'],a:'Por nada! Se precisar, é só chamar 💚'}
+];
+const MR_CHIPS=['Como começo?','Como cadastro meu WhatsApp?','Meu robô está funcionando?','Meus grupos não aparecem','Onde acho meus IDs?','O que é Sub ID?','Por que não vejo cliques?','Como funciona a fila?','O link não foi trocado','Como mudo o tema?'];
+function mrFind(txt){
+  const n=' '+nz(txt)+' ';let best=null,bs=0;
+  for(const e of MR){let sc=0;for(const k of e.k){const kk=nz(k);if(kk.length<=4?n.includes(' '+kk+' '):n.includes(kk))sc+=kk.length}if(sc>bs){bs=sc;best=e}}
+  return bs>=2?best:null}
+function mrBubble(html,who,raw){const d=document.createElement('div');d.className='mr-b '+who;if(raw)d.textContent=html;else d.innerHTML=html;$('mrMsgs').append(d);$('mrMsgs').scrollTop=1e9;return d}
+function mrActs(go,act){
+  const b=[...(go||[]).map(g=>`<button type="button" class="sec tiny" data-go="${esc(g[1])}">${esc(g[0])} →</button>`),...(act&&SD_ACT[act]?[`<button type="button" class="tiny" data-act="${esc(act)}">${SD_ACT[act][0]} →</button>`]:[])];
+  return b.length?`<div class="acts">${b.join('')}</div>`:''}
+async function mrAsk(txt){
+  mrBubble(txt,'me',true);
+  const ty=mrBubble('<span class="mr-ty" aria-label="Mariana está digitando"><i></i><i></i><i></i></span>','bot');
+  const t0=Date.now();let r;
+  try{
+    const e=mrFind(txt);
+    r=!e?{html:'Hmm, não entendi essa 🤔 Tente com palavras-chave, como <b>WhatsApp</b>, <b>grupos</b>, <b>lojas</b>, <b>Sub ID</b> ou <b>cliques</b>, ou escolha um assunto abaixo. Se eu não resolver, fale com o suporte.'}:typeof e.a==='function'?await e.a():{html:e.a,go:e.go};
+  }catch(err){r={html:'Não consegui conferir agora: '+esc(err.message||'erro inesperado')+'. Tente de novo em instantes.'}}
+  await new Promise(ok=>setTimeout(ok,Math.max(0,550-(Date.now()-t0))));
+  ty.innerHTML=r.html+mrActs(r.go,r.act);$('mrMsgs').scrollTop=1e9}
+function mrSend(ev){ev.preventDefault();const i=$('mrIn'),t=i.value.trim();if(!t)return false;i.value='';mrAsk(t);return false}
+let MR_OPEN=false;
+function mrToggle(){
+  MR_OPEN=!MR_OPEN;$('mrPan').hidden=!MR_OPEN;$('mrBtn').setAttribute('aria-expanded',MR_OPEN);document.body.classList.toggle('mr-open',MR_OPEN);
+  if(MR_OPEN){$('mrDot').hidden=true;$('mrHi').hidden=true;ls.set('mr1','1');
+    if(!$('mrMsgs').children.length){mrBubble('Oi! Eu sou a <b>Mariana</b> 👋, assistente virtual do Linkfly. Tiro dúvidas básicas sobre o painel e posso conferir se o seu robô está funcionando. É só perguntar ou tocar num assunto abaixo.','bot')}
+    $('mrIn').focus()}}
+function mrShow(on){$('mrWrap').hidden=!on;if(!on&&MR_OPEN)mrToggle();
+  if(on&&!$('mrFab').innerHTML){$('mrFab').innerHTML=mascot('ok',48,'mini');$('mrAv').innerHTML=mascot('ok',40,'mini');
+    $('mrChips').innerHTML=MR_CHIPS.map(c=>`<button type="button">${esc(c)}</button>`).join('');
+    if(ls.get('mr1')==='1')$('mrDot').hidden=true;else setTimeout(()=>{if(!MR_OPEN&&!$('mrWrap').hidden){$('mrHi').hidden=false;setTimeout(()=>$('mrHi').hidden=true,9000)}},2500)}}
+document.addEventListener('click',e=>{
+  const c=e.target.closest('#mrChips button');if(c){mrAsk(c.textContent);return}
+  const g=e.target.closest('#mrMsgs [data-go]');if(g){location.hash=g.dataset.go;if(innerWidth<=760)mrToggle();return}
+  const a=e.target.closest('#mrMsgs [data-act]');if(a){doAct(a.dataset.act);if(innerWidth<=760&&a.dataset.act!=='ativar'&&a.dataset.act!=='webhook')mrToggle()}});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&MR_OPEN)mrToggle()});
+
+// ---- rotas
+function route(){const n=(location.hash||'#desempenho').slice(1);
+  document.querySelectorAll('main>section').forEach(s=>s.classList.toggle('on',s.id===n));
+  document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+n));
+  if(n==='desempenho')run(loadStats);if(n==='enviar')run(loadEnviar);if(n==='historico')run(loadHist);if(n==='conexao'){checkStatus();if(GROUPS.length)drawGroups()}if(n==='mensagens')prev();if(n==='auto')run(loadDiag);if(n==='admin')run(loadAdmin);if(n==='planos')loadPlanos();if(n==='fila')run(loadFila);if(n==='horarios')drawHr()}
+addEventListener('hashchange',route);
+
+// ---- modo demonstração (dados de exemplo)
+let DU=[{id:'u1',email:'maria@exemplo.com',plano:'plano2',expira:Date.now()+20*864e5,acesso:'ok',bloqueado:false,posts:340,cliques:1280,ultimo:Date.now()-36e5},{id:'u2',email:'joao@exemplo.com',plano:'teste',expira:Date.now()+3*864e5,acesso:'ok',bloqueado:false,posts:42,cliques:96,ultimo:Date.now()-72e5},{id:'u3',email:'ana@exemplo.com',plano:'plano1',expira:Date.now()-2*864e5,acesso:'vencido',bloqueado:false,posts:510,cliques:2210,ultimo:Date.now()-3*864e5},{id:'u4',email:'carlos@exemplo.com',plano:'teste',expira:Date.now()+1*864e5,acesso:'bloqueado',bloqueado:true,posts:8,cliques:3,ultimo:Date.now()-9*864e5}];
+const NOVO=/novo/i.test(location.search+location.pathname);
+function demoCfg(){if(NOVO)return{nome:'Camila',admin:false,acesso:'ok',plano:'teste',expira:Date.now()+30*864e5,linkAssinatura:'#',protecao:{limiteDia:150,aquecimento:true,variar:true},active:false,delay:60,rastrear:true,rastreioDisponivel:false,mensagem:{modelo:'classico',limparConvites:true,buscarFoto:true},horarios:{ativo:false,horas:[]},sources:[],dests:[],ids:{},templates:{},shopee:{appId:'',temSecret:false},ofertas:{active:false,everyMin:60,max:3,minDiscount:30,keywords:[]},names:{}};return{nome:'Camila',admin:true,acesso:'ok',plano:'teste',expira:Date.now()+5*864e5,linkAssinatura:'#',protecao:{limiteDia:150,aquecimento:true,variar:true},active:false,delay:60,rastrear:true,rastreioDisponivel:true,mensagem:{modelo:'urgencia',cupom:'BLACK10',topo:'🔔 OFERTA DO DIA',rodape:'Entre no grupo: https://chat.whatsapp.com/exemplo',limparConvites:true,bloquear:['sorteio']},horarios:{ativo:true,horas:[12,19,20,21]},sources:['g1'],dests:['g3'],subids:{g3:'lf3a9c'},ids:{amazon:'seunome-20'},templates:{},shopee:{appId:'',temSecret:false},ofertas:{active:false,everyMin:60,max:3,minDiscount:30,keywords:[]},names:{g1:'Ofertas Relâmpago',g2:'Achadinhos BR',g3:'Meu Grupo de Ofertas'}}}
+const rnd=n=>{const x=Math.sin(n*9301+49297)*233280;return x-Math.floor(x)};
+function demo(p,m,b){
+  const names=CFG.names;
+  if(NOVO&&p==='/stats')return{rastreio:false,total:{posts:0,links:0,cliques:0},dias:Array.from({length:14},(_,i)=>({d:new Date(Date.now()-(13-i)*864e5).toISOString().slice(0,10),posts:0,links:0,cliques:0})),horas:Array.from({length:24},(_,h)=>({h,posts:0,cliques:0,media:0})),semana:Array.from({length:7},(_,d)=>({d,posts:0,cliques:0,media:0})),lojas:[],grupos:[],origens:[],top:[]};
+  if(p==='/diagnostico')return{estado:'open',webhook:{url:'x',enabled:true,events:['MESSAGES_UPSERT']},esperado:'x',recebidas:14,ultimoWebhook:Date.now()-3e5,fila:1,eventos:[{t:Date.now()-6e4,motivo:'Enviada para Meu Grupo de Ofertas.',ok:true,grupo:'',n:1},{t:Date.now()-9e4,motivo:'Oferta recebida e colocada na fila de envio.',ok:true,grupo:'Ofertas Relâmpago',n:1},{t:Date.now()-2e5,motivo:'Falta cadastrar o ID de Shopee (App ID e Secret) no menu Lojas.',ok:false,grupo:'Ofertas Relâmpago',n:2},{t:Date.now()-4e5,motivo:'Mensagem sem link, ignorada.',ok:false,grupo:'Ofertas Relâmpago',n:1}]};
+  if(p==='/webhook/reset'||p==='/feedback'||p==='/campanha/fechar'||p==='/teste-plano2')return{ok:true};
+  if(p==='/admin/feedback')return[{email:'joao@exemplo.com',dia:7,nota:5,comentario:'Economizei muito tempo!'},{email:'ana@exemplo.com',dia:8,nota:3,comentario:'Faltou postar em mais grupos.'}];
+  if(p==='/admin/users'&&m==='GET')return DU;
+  if(p.startsWith('/admin/users/')){const u=DU.find(x=>x.id===p.split('/')[3]);if(p.endsWith('/reset'))return{link:'https://seudominio/?reset=exemplo'};
+    if(b.bloqueado!==undefined){u.bloqueado=b.bloqueado;u.acesso=b.bloqueado?'bloqueado':(u.expira<Date.now()?'vencido':'ok')}
+    if(b.addDias){u.expira=Math.max(u.expira,Date.now())+b.addDias*864e5;u.acesso=u.bloqueado?'bloqueado':'ok'}if(b.plano)u.plano=b.plano;return{ok:true}}
+  if(p==='/saude'){const on=!NOVO&&CFG.active;return on?{nivel:'ok',passos:[{ok:true,txt:'Assinatura em dia'},{ok:true,txt:'WhatsApp conectado'},{ok:true,txt:'Grupos escolhidos'},{ok:true,txt:'ID de afiliado cadastrado'},{ok:true,txt:'Robô ligado'},{ok:true,txt:'Recebendo as mensagens dos grupos'}],faltam:0,proximo:null,ultimo:{t:Date.now()-18e4,ok:true,motivo:'Enviada para '+names.g3+'.'},fila:1,hoje:{n:34,limite:150},estado:'open'}
+    :{nivel:'falta',passos:[{ok:true,txt:'Assinatura em dia'},{ok:!NOVO,txt:NOVO?'Conectar o WhatsApp':'WhatsApp conectado',acao:'conexao'},{ok:!NOVO,txt:NOVO?'Escolher o grupo onde postar':'Grupos escolhidos',acao:'conexao'},{ok:!NOVO,txt:NOVO?'Cadastrar seu ID de afiliado de uma loja':'ID de afiliado cadastrado',acao:'lojas'},{ok:false,txt:'Ligar o robô',acao:'ativar'}],faltam:NOVO?4:1,proximo:NOVO?{id:'whatsapp',txt:'Conectar o WhatsApp',acao:'conexao'}:{id:'ativo',txt:'Ligar o robô',acao:'ativar'},ultimo:null,fila:0,hoje:{n:0,limite:20},estado:NOVO?'sem_instancia':'open'}}
+  if(p==='/fila')return{bloqueio:{tipo:'intervalo',txt:'Tudo certo: o robô envia uma de cada vez, com cerca de 60 segundos de intervalo para proteger o seu número.'},itens:[{t:Date.now()-9e4,tipo:'cópia',grupo:names.g3,sub:'lf3a9c',txt:'🔥 Fone Bluetooth com cancelamento de ruído',lojas:['shopee'],atual:true},{t:Date.now()-6e4,tipo:'oferta',grupo:names.g3,sub:'lf3a9c',txt:'Air Fryer 4L por R$ 219',lojas:['shopee']},{t:Date.now()-2e4,tipo:'cópia',grupo:names.g3,sub:'lf3a9c',txt:'Smartwatch Fit com GPS',lojas:['amazon']}],hoje:{n:34,limite:150},delay:60,ofertas:{proxima:Date.now()+22*60e3,cadaMin:60},horarios:[12,19,20,21]};
+  if(p==='/resumo-semana'){const d=new Date(),w=(d.getDay()+6)%7,iso=x=>new Date(x).toISOString().slice(0,10);return{de:iso(d-(w+7)*864e5),ate:iso(d-(w+1)*864e5),rastreio:true,posts:48,cliques:73,grupos:[{id:'g3',nome:names.g3,sub:'lf3a9c',posts:48,cliques:73}],campeao:{id:'g3',nome:names.g3,sub:'lf3a9c',posts:48,cliques:73}}}
+  if(p==='/status')return{estado:NOVO?'sem_instancia':'open'};if(p==='/qr')return{};
+  if(p==='/groups')return Object.entries(names).map(([id,nome])=>({id,nome}));
+  if(p==='/config'){return{ok:true}}
+  if(p==='/inbox')return[{id:'a',src:'g1',grupo:names.g1,t:Date.now()-6e5,text:'🔥 Fone Bluetooth com cancelamento de ruído\nDe R$ 199 por R$ 89,90\nhttps://www.amazon.com.br/dp/B000000000'},{id:'b',src:'g1',grupo:names.g1,t:Date.now()-36e5,text:'Air fryer 4L por R$ 219\nhttps://shopee.com.br/product/1/2'}];
+  if(p==='/convert')return{out:b.text+'\n(links convertidos)',n:1,lojas:['amazon']};
+  if(p==='/send')return{ok:true,enviados:b.to.length,falhas:[]};
+  const L=Object.keys(LJ),log=Array.from({length:30},(_,i)=>{const lj=L[Math.floor(rnd(i)*6)];return{t:Date.now()-i*i*3e5-i*9e5,tipo:['cópia','oferta','manual'][Math.floor(rnd(i+5)*3)],lojas:[lj],to:['g3','g2'][i%2],grupo:names[['g3','g2'][i%2]],n:1,cliques:Math.floor(rnd(i+9)*40),txt:['Fone Bluetooth ANC','Air Fryer 4L','Smartwatch Fit','Tênis de Corrida','Cafeteira Expresso','Kit Skincare','Mochila Notebook','Ventilador Turbo'][i%8]}});
+  if(p==='/log')return log;
+  const dias=Array.from({length:14},(_,i)=>{const d=new Date(Date.now()-(13-i)*864e5).toISOString().slice(0,10);const l=Math.floor(8+rnd(i)*30);return{d,posts:l,links:l,cliques:Math.floor(l*rnd(i+3)*9)}});
+  const horas=Array.from({length:24},(_,h)=>{const posts=h>=8?Math.floor(2+rnd(h)*8):0;const f=[12,19,20,21].includes(h)?3:1;return{h,posts,cliques:Math.floor(posts*(2+rnd(h+2)*5)*f),media:posts?+((2+rnd(h+2)*5)*f).toFixed(2):0}});
+  const g=(id,a)=>({id,nome:names[id],sub:id==='g3'?'lf3a9c':'',posts:a,cliques:a*7,media:7});
+  return{rastreio:true,total:{posts:dias.reduce((a,d)=>a+d.posts,0),links:dias.reduce((a,d)=>a+d.links,0),cliques:dias.reduce((a,d)=>a+d.cliques,0)},dias,horas,
+    semana:[5.1,6.2,6.8,7.4,8.9,11.3,9.6].map((m,d)=>({d,posts:30,cliques:Math.round(m*30),media:m})),top:log.slice().sort((a,b)=>b.cliques-a.cliques).slice(0,6).map(e=>({...e,cl:e.cliques})),
+    lojas:L.map((k,i)=>({loja:k,links:60-i*9,cliques:300-i*45})),grupos:[g('g3',210),g('g2',90)],origens:[g('g1',150),g('g2',60)]}}
+const IC={sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/>',moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',chart:'<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>',send:'<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>',list:'<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3.5" cy="6" r=".6"/><circle cx="3.5" cy="12" r=".6"/><circle cx="3.5" cy="18" r=".6"/>',users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',bag:'<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>',msg:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',zap:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',out:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>'};
+IC.queue='<line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="13" y2="18"/><polyline points="16 15 19 18 16 21"/>';
+document.querySelectorAll('[data-i]').forEach(e=>e.innerHTML=`<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[e.dataset.i]}</svg>`);
+initRange();
+document.querySelectorAll('.lgp').forEach(e=>e.outerHTML=lg(e.dataset.k));
+boot();
+</script>
+</body>
+</html>

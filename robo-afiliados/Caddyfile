@@ -1,0 +1,20 @@
+{$DOMINIO} {
+  encode gzip
+
+  # O Evolution fala com o app pela rede interna (http://app:3000), nunca por aqui.
+  # Na internet só o aviso de pagamento (/webhook/pagamento/...) pode entrar.
+  @webhook_interno {
+    path /webhook/*
+    not path /webhook/pagamento/*
+  }
+  respond @webhook_interno 404
+
+  header {
+    Strict-Transport-Security "max-age=31536000"
+    X-Content-Type-Options nosniff
+    X-Frame-Options DENY
+    Referrer-Policy same-origin
+    -Server
+  }
+  reverse_proxy app:3000
+}
