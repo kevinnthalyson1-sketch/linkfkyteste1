@@ -755,13 +755,32 @@ api.get('/status', async (req, res) => {
 });
 api.get('/qr', async (req, res) => {
   try {
-    try { const c = await evo(`/instance/connect/${req.inst}`); ensureWebhook(req.inst).catch(e => console.error('webhook/set:', e.message)); return res.json(c); }
-    catch (e) { if (e.status !== 404) throw e; }
-    await evo('/instance/create', 'POST', { instanceName: req.inst, integration: 'WHATSAPP-BAILEYS', qrcode: true,
-      webhook: { enabled: true, url: whUrl(req.inst), byEvents: false, base64: true, events: ['MESSAGES_UPSERT'] } });
+    try { 
+      const c = await evo(`/instance/connect/${req.inst}`); 
+      ensureWebhook(req.inst).catch(e => console.error('webhook/set:', e.message)); 
+      return res.json(c); 
+    } catch (e) { 
+      if (e.status !== 404) throw e; 
+    }
+    
+    await evo('/instance/create', 'POST', { 
+      instanceName: req.inst, 
+      integration: 'WHATSAPP-BAILEYS', 
+      qrcode: true,
+      webhook: { 
+        enabled: true, 
+        url: `${process.env.WEBHOOK_BASE || PUBLIC_URL}/webhook/${req.inst}`, 
+        byEvents: false, 
+        base64: true, 
+        events: ['MESSAGES_UPSERT'] 
+      } 
+    });
+    
     await ensureWebhook(req.inst).catch(e => console.error('webhook/set:', e.message));
     res.json(await evo(`/instance/connect/${req.inst}`));
-  } catch (e) { res.status(502).json({ erro: e.message }); }
+  } catch (e) { 
+    res.status(502).json({ erro: e.message }); 
+  }
 });
 api.get('/groups', async (req, res) => {
   try {
