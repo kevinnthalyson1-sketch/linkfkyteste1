@@ -231,7 +231,7 @@ async function compor(raw, u, sub, strict, itemImage) {
   if (!r.links.length) return { ...r, text: r.out, image: null };
   const linkOnly = soLink(raw) && r.links.length === 1, foto = u.mensagem?.buscarFoto !== false;
   const info = linkOnly || (!itemImage && foto) ? await ogInfo(r.links[0].orig) : null;
-  let text = linkOnly ? build({ titulo: info?.title || '', preco: info?.preco || '', link: r.links[0].link }, u, true) : wrap(r.out, u);
+  let text = linkOnly ? build({ titulo: info?.title || '', preco: info?.preco || '', de: info?.de || '', desconto: info?.desc || '', link: r.links[0].link }, u, true) : wrap(r.out, u);
   if (linkOnly && info?.preco && !text.includes(info.preco)) { // o modelo só mostra o preço junto de "De/Desconto"; sem esses dados, põe o preço numa linha própria antes do link
     const ls = text.split('\n'), i = ls.findIndex(l => l.includes(r.links[0].link)); ls.splice(i < 0 ? ls.length : i, 0, `💰 ${info.preco}`); text = ls.join('\n');
   }
@@ -241,7 +241,8 @@ async function compor(raw, u, sub, strict, itemImage) {
 // ---------- Evolution ----------
 async function evo(p, method = 'GET', body) {
   if (!EVO_URL || !EVO_KEY) throw new Error(`Falta ${[!EVO_URL && 'EVO_URL', !EVO_KEY && 'EVO_KEY'].filter(Boolean).join(' e ')} no arquivo .env. Use o RECOMECAR.bat e reinicie o sistema.`);
-  const r = await fetch(EVO_URL.replace(/\/+$/, '') + p, { method, headers: { apikey: EVO_KEY, 'Content-Type': 'application/json' }, body: body && JSON.stringify(body) });
+  const r = await fetch(EVO_URL.replace(/\/+$/, '') + p, { method, headers: { apikey: EVO_KEY, 'Content-Type': 'application/json' }, body: body && JSON.stringify(body), signal: AbortSignal.timeout(Number(process.env.EVO_TIMEOUT_MS) || 60000) })
+    .catch(e => { throw e.name === 'TimeoutError' || e.name === 'AbortError' ? new Error('O Evolution (WhatsApp) demorou demais para responder. Ele pode estar dormindo, reiniciando ou sem memória no servidor. Tente de novo em 1 minuto.') : e; });
   if (!r.ok) { const e = new Error(`Evolution ${r.status}: ${await r.text()}`); e.status = r.status; throw e; }
   return r.json();
 }
@@ -249,21 +250,37 @@ async function evo(p, method = 'GET', body) {
 // ---------- foto do produto ----------
 const infoCache = new Map();
 const deEnt = t => String(t || '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#0?39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
+const GENERIC = /^(mercado\s*(livre|libre)|amazon(\.com\.br)?|magalu|magazine\s*luiza|shopee|aliexpress|shein)$/i; // título genérico = página bloqueada, não é o produto
+const fmtPreco = n => Number.isFinite(n) && n > 0 ? brl(n) : '';
+const mlId = url => { const u = new URL(url); return (u.searchParams.get('wid') || (decodeURIComponent(u.search + u.hash).match(/MLB\d{6,}/) || [])[0] || (u.pathname.match(/MLB-?\d{6,}/) || [])[0] || '').replace('-', ''); };
+async function mlItem(url) { // Mercado Livre: a página costuma bloquear servidores; tenta a API pública do anúncio (título, foto, preço e preço antigo)
+  try {
+    const id = mlId(url); if (!/^MLB\d+$/.test(id)) return null;
+    const r = await fetch(`https://api.mercadolibre.com/items/${id}`, { signal: AbortSignal.timeout(6000), headers: { Accept: 'application/json' } });
+    if (!r.ok) return null; const j = await r.json();
+    return { title: String(j.title || '').slice(0, 120), image: String(j.pictures?.[0]?.secure_url || j.secure_thumbnail || j.thumbnail || '').replace(/^http:/, 'https:') || null, price: Number(j.price), old: Number(j.original_price) };
+  } catch { return null; }
+}
 async function ogInfo(url) { // título, foto e preço da página do produto (melhor esforço; só em página de loja conhecida)
   const hit = infoCache.get(url); if (hit && Date.now() - hit.t < 600e3) return hit.v;
+  try { if (/mercadoli(vre|bre)\./.test(new URL(url).hostname.toLowerCase())) { const m = await mlItem(url); if (m?.title) { const off = m.old > m.price; const v = { image: m.image, title: m.title, preco: fmtPreco(m.price), de: off ? fmtPreco(m.old) : '', desc: off ? Math.round((1 - m.price / m.old) * 100) : '' }; infoCache.set(url, { v, t: Date.now() }); return v; } } } catch {}
   let v = null;
   try {
     if (!isStore(new URL(url).hostname.toLowerCase())) return null;
     const { res, url: final } = await safeFetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36', 'Accept-Language': 'pt-BR,pt;q=0.9' } });
     const html = await readLimited(res, 200000);
     const meta = k => { const m = html.match(new RegExp(`<meta[^>]+(?:property|name)=["']${k}["'][^>]*content=["']([^"']*)["']`, 'i')) || html.match(new RegExp(`<meta[^>]+content=["']([^"']*)["'][^>]*(?:property|name)=["']${k}["']`, 'i')); return m ? deEnt(m[1]) : null; };
+    const ld = (() => { for (const m of html.matchAll(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) { try { const j = JSON.parse(m[1]); const p = [].concat(j, j['@graph'] || []).find(x => x && /Product/.test([].concat(x['@type']).join())); if (p) return p; } catch {} } return null; })();
+    const ldImg = [].concat(ld?.image || []).map(x => typeof x === 'string' ? x : x?.url).find(Boolean);
     let image = null;
-    const im = meta('og:image');
-    if (im) { const iu = new URL(im, final); if (iu.protocol === 'https:' && await publicHost(iu.hostname)) image = iu.toString(); }
-    let title = meta('og:title') || deEnt((html.match(/<title[^>]*>([^<]*)/i) || [])[1]);
+    const im = meta('og:image') || meta('twitter:image') || ldImg;
+    if (im) { try { const iu = new URL(im, final); if (iu.protocol === 'https:' && await publicHost(iu.hostname)) image = iu.toString(); } catch {} }
+    let title = deEnt(meta('og:title') || ld?.name || (html.match(/<title[^>]*>([^<]*)/i) || [])[1]);
     title = title.replace(/^(Amazon\.com\.br|Amazon)\s*:\s*/i, '').replace(/\s*[|\-–:]\s*(Amazon|Mercado Livre|Magalu|Magazine Luiza|Shopee|AliExpress|Shein)[^|]*$/i, '').slice(0, 120);
-    const n = Number(String(meta('product:price:amount') || meta('og:price:amount') || '').replace(',', '.'));
-    v = { image, title, preco: Number.isFinite(n) && n > 0 ? brl(n) : '' };
+    if (GENERIC.test(title.trim()) || title.trim().length < 4) title = '';
+    const off = [].concat(ld?.offers || [])[0] || {};
+    const n = Number(String(meta('product:price:amount') || meta('og:price:amount') || off.price || off.lowPrice || '').replace(',', '.'));
+    v = { image, title, preco: fmtPreco(n) };
   } catch { v = null; }
   if (infoCache.size > 300) infoCache.clear(); infoCache.set(url, { v, t: Date.now() }); return v;
 }
@@ -755,32 +772,13 @@ api.get('/status', async (req, res) => {
 });
 api.get('/qr', async (req, res) => {
   try {
-    try { 
-      const c = await evo(`/instance/connect/${req.inst}`); 
-      ensureWebhook(req.inst).catch(e => console.error('webhook/set:', e.message)); 
-      return res.json(c); 
-    } catch (e) { 
-      if (e.status !== 404) throw e; 
-    }
-    
-    await evo('/instance/create', 'POST', { 
-      instanceName: req.inst, 
-      integration: 'WHATSAPP-BAILEYS', 
-      qrcode: true,
-      webhook: { 
-        enabled: true, 
-        url: `${process.env.WEBHOOK_BASE || PUBLIC_URL}/webhook/${req.inst}`, 
-        byEvents: false, 
-        base64: true, 
-        events: ['MESSAGES_UPSERT'] 
-      } 
-    });
-    
+    try { const c = await evo(`/instance/connect/${req.inst}`); ensureWebhook(req.inst).catch(e => console.error('webhook/set:', e.message)); return res.json(c); }
+    catch (e) { if (e.status !== 404) throw e; }
+    await evo('/instance/create', 'POST', { instanceName: req.inst, integration: 'WHATSAPP-BAILEYS', qrcode: true,
+      webhook: { enabled: true, url: whUrl(req.inst), byEvents: false, base64: true, events: ['MESSAGES_UPSERT'] } });
     await ensureWebhook(req.inst).catch(e => console.error('webhook/set:', e.message));
     res.json(await evo(`/instance/connect/${req.inst}`));
-  } catch (e) { 
-    res.status(502).json({ erro: e.message }); 
-  }
+  } catch (e) { res.status(502).json({ erro: e.message }); }
 });
 api.get('/groups', async (req, res) => {
   try {
